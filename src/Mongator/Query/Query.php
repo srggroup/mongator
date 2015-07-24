@@ -680,7 +680,7 @@ abstract class Query implements \Countable, \IteratorAggregate
         $options = array();
         if ( $this->timeout ) $options['timeout'] = $this->timeout;
 
-        $fields = array();
+        //$fields = array();
         $fields=$this->fields;
         /*foreach ($this->fields as $key => $value) {
             if ( !is_numeric($value) ) $fields[$value] = 1;
