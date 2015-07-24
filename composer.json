@@ -1,5 +1,5 @@
 {
-    "name": "mongator/mongator",
+    "name": "srg/mongator",
     "type": "library",
     "description": "Mongator is a easy, powerful and ultrafast ODM for PHP and MongoDB. (forked from Mandango project)",
     "keywords": ["odm", "mongodb"],
