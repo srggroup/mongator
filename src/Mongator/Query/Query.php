@@ -681,10 +681,11 @@ abstract class Query implements \Countable, \IteratorAggregate
         if ( $this->timeout ) $options['timeout'] = $this->timeout;
 
         $fields = array();
-        foreach ($this->fields as $key => $value) {
+        $fields=$this->fields;
+        /*foreach ($this->fields as $key => $value) {
             if ( !is_numeric($value) ) $fields[$value] = 1;
             else $fields[$key] = $value;
-        }
+        }*/
 
         $response = $this->repository->text(
             $search,
