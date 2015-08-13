@@ -79,9 +79,9 @@
         if (!isset($this->data['fields']['{{ name }}'])) {
             $this->data['fields']['{{ name }}'] = null;
         }
-{% if config_class.translateFields is defined and {{ name }} is in_array(config_class.translateFields) %}
+{% if (config_class.translateFields is defined) and (name in config_class.translateFields) %}
         if(\Mongator\Mongator::$doTranslate && in_array('{{ name }}', $this->translateFields)){
-          return $this->getTranslationFor('{{ name }}');
+            return $this->getTranslationFor('{{ name }}');
         }
 {% endif %}
 
