@@ -1,5 +1,5 @@
 {
-    "name": "srg/mongator",
+    "name": "mongator/mongator",
     "type": "library",
     "description": "Mongator is a easy, powerful and ultrafast ODM for PHP and MongoDB. (forked from Mandango project)",
     "keywords": ["odm", "mongodb"],
@@ -27,11 +27,11 @@
     ],
     "require": {
         "php": ">=5.3.0",
+        "mongator/mondator": "dev-srggroup",
         "symfony/event-dispatcher": "2.4.*@dev"
     },
     "require-dev": {
-        "athletic/athletic": "dev-master",
-        "mongator/mondator": "dev-srggroup"
+        "athletic/athletic": "dev-master"
     },
     "suggest": {
         "ext-apc": "Allow caching on APC",
