@@ -36,6 +36,8 @@ class Mongator
     private $repositories;
     private $dispatcher;
 
+    static $doTranslate=false;
+
     /**
      * Constructor.
      *

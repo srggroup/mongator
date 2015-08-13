@@ -80,6 +80,10 @@
             $this->data['fields']['{{ name }}'] = null;
         }
 
+        if(\Mongator\Mongator::doTranslate && in_array({{ name }}, $this->translateFields)){
+          return $this->getTranslationFor({{ name }});
+        }
+
         return $this->data['fields']['{{ name }}'];
     }
 {% endfor %}
