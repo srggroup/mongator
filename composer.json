@@ -27,11 +27,11 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "mongator/mondator": "dev-srggroup",
         "symfony/event-dispatcher": "2.4.*@dev"
     },
     "require-dev": {
-        "athletic/athletic": "dev-master"
+        "athletic/athletic": "dev-master",
+        "mongator/mondator": "dev-srggroup"
     },
     "suggest": {
         "ext-apc": "Allow caching on APC",
