@@ -1,11 +1,14 @@
 <?php
 
+    /**
+     * Translatable fields
+     */
     public $translateFields=[
-    {% if config_class.translateFields is defined %}
-    {% for tField in config_class.translateFields %}
+{% if config_class.translateFields is defined %}
+{% for tField in config_class.translateFields %}
         '{{ tField }}',
-    {% endfor %}
-    {% endif %}
+{% endfor %}
+{% endif %}
     ];
 
 
