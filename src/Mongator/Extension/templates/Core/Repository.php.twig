@@ -164,7 +164,7 @@
                 if(!$document->getId()){
                   {{ Mongator_id_generator(config_class, "$data['_id']", 16) }}
                 } else {
-                  $data['_id']=(string) $document->getId();
+                  $data['_id']=$document->getId();
                 }
 
 
