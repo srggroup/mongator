@@ -126,7 +126,9 @@
                 $document->preInsertEvent();
 
                 $a[$oid] = $document->queryForSave();
-                {{ Mongator_id_generator(config_class, "$a[$oid]['_id']", 16) }}
+                if(!isset($data['_id'])){
+                  {{ Mongator_id_generator(config_class, "$a[$oid]['_id']", 16) }}
+                }
             }
 
             if ($a) {
