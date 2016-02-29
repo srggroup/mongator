@@ -21,31 +21,29 @@ use Mongator\Type\Container as TypeContainer;
  */
 class Mongator extends \Twig_Extension
 {
-    public function getFilters()
-    {
-        return array(
-            'ucfirst'    => new \Twig_Filter_Function('ucfirst'),
-            'var_export' => new \Twig_Filter_Function(function($string) {
-                return var_export($string, true);
-            })
-        );
-    }
+	public function getFilters()
+	{
+		return array(
+			new \Twig_Filter('ucfirst', function($string){
+				return ucfirst($string);
+			}),
+			new \Twig_Filter('var_export', function($string) {
+				return var_export($string, true);
+			})
 
-    public function getFunctions()
-    {
-        return array(
-            'Mongator_id_generator' =>
-                new \Twig_Function_Method($this, 'MongatorIdGenerator'),
-            'Mongator_id_generator_to_mongo' =>
-                new \Twig_Function_Method($this, 'MongatorIdGeneratorToMongo'),
-            'Mongator_id_generator_to_php' =>
-                new \Twig_Function_Method($this, 'MongatorIdGeneratorToPHP'),
-            'Mongator_type_to_mongo' =>
-                new \Twig_Function_Method($this, 'MongatorTypeToMongo'),
-            'Mongator_type_to_php' =>
-                new \Twig_Function_Method($this, 'MongatorTypeToPHP'),
-        );
-    }
+		);
+	}
+
+	public function getFunctions()
+	{
+		return array(
+			new \Twig_Function('Mongator_id_generator', array($this, 'MongatorIdGenerator')),
+			new \Twig_Function('Mongator_id_generator_to_mongo', array($this, 'MongatorIdGeneratorToMongo')),
+			new \Twig_Function('Mongator_id_generator_to_php', array($this, 'MongatorIdGeneratorToPHP')),
+			new \Twig_Function('Mongator_type_to_mongo', array($this, 'MongatorTypeToMongo')),
+			new \Twig_Function('Mongator_type_to_php', array($this, 'MongatorTypeToPHP')),
+		);
+	}
 
     public function MongatorIdGenerator($configClass, $id, $indent = 8)
     {
