@@ -160,6 +160,10 @@
                         $rap = $document->getRootAndPath();
                         $query['$unset'][$rap['path']] = 1;
                     }
+
+                    if($group->getArchive()->getOrDefault('clear', false)){
+                        $query['$set'][$groupRap['path']] = [];
+                    }
                 }
 {% endif %}
 {% endfor %}

@@ -116,6 +116,16 @@ abstract class AbstractGroup implements \Countable, \IteratorAggregate
     }
 
     /**
+     * Clear all documents
+     *
+     * @api
+     */
+    public function clear()
+    {
+	    $this->getArchive()->set('clear', true);
+    }
+
+    /**
      * Returns the remove queue of the group.
      *
      * @api
@@ -282,13 +292,21 @@ abstract class AbstractGroup implements \Countable, \IteratorAggregate
     {
         $this->clearAdd();
 
+
+	    if($documents === []){
+	        $this->clear();
+		    return;
+	    }
+
         $this->remove($this->getSaved());
+
         $this->clearRemove();
 
         $this->saved = array();
 
         $this->add($documents);
     }
+
 
     /**
      * Resets the group (clear adds and removed, and saved if there are adds or removed).
