@@ -581,7 +581,7 @@ class Core extends Extension
         }
     }
 
-    private function initDefinitionsProcess()
+    protected function initDefinitionsProcess()
     {
         $classes = array('document' => $this->class);
         if (false !== $pos = strrpos($classes['document'], '\\')) {

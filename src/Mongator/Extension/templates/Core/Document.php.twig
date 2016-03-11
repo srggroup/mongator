@@ -1,4 +1,18 @@
 <?php
+
+    /**
+     * Translatable fields
+     */
+    public $translateFields=[
+{% if config_class.translateFields is defined %}
+{% for tField in config_class.translateFields %}
+        '{{ tField }}',
+{% endfor %}
+{% endif %}
+    ];
+
+
+
     /**
      * {@inheritdoc}
      */
