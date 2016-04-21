@@ -1,5 +1,5 @@
 {
-    "name": "mongator/mongator",
+    "name": "srggroup/mongator",
     "type": "library",
     "description": "Mongator is a easy, powerful and ultrafast ODM for PHP and MongoDB. (forked from Mandango project)",
     "keywords": ["odm", "mongodb"],
@@ -27,7 +27,7 @@
     ],
     "require": {
         "php": "5.6.0",
-        "mongator/mondator": "dev-master",
+        "mongator/mondator": "dev-master as 1.0.0",
         "symfony/event-dispatcher": "^2.8"
     },
     "require-dev": {
