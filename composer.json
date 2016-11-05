@@ -26,8 +26,8 @@
         }
     ],
     "require": {
-        "php": "^5.6.0",
-        "mongator/mondator": "dev-srggroup as 2.0.0",
+        "php": "^5.6",
+        "mongator/mondator": "^1.6",
         "symfony/event-dispatcher": "^2.8"
     },
     "require-dev": {
