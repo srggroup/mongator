@@ -20,6 +20,9 @@
             $this->fieldsModified = array();
         }
 
+        $this->_rawData = $data;
+
+
 {% endif %}
 {# query hash #}
 {% if not config_class.isEmbedded %}
