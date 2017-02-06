@@ -27,7 +27,7 @@
     ],
     "require": {
         "php": "^7",
-        "mongator/mondator": "^1.6",
+        "mongator/mondator": "dev-master",
         "symfony/event-dispatcher": "^2.8"
     },
     "require-dev": {
