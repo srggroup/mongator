@@ -28,7 +28,8 @@
     "require": {
         "php": "^7",
         "mongator/mondator": "dev-master",
-        "symfony/event-dispatcher": "^2.8"
+        "symfony/event-dispatcher": "^2.8",
+        "mongodb/mongodb": "^1.1"
     },
     "require-dev": {
         "athletic/athletic": "dev-master"
