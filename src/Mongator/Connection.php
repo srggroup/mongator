@@ -11,6 +11,8 @@
 
 namespace Mongator;
 
+use \MongoDB\Client as MongoDBClient;
+
 /**
  * Connection.
  *
@@ -23,9 +25,6 @@ class Connection implements ConnectionInterface
     private $server;
     private $dbName;
     private $options;
-
-    private $loggerCallable;
-    private $logDefault;
 
     private $mongo;
     private $mongoDB;
@@ -139,67 +138,10 @@ class Connection implements ConnectionInterface
     /**
      * {@inheritdoc}
      */
-    public function setLoggerCallable($loggerCallable = null)
-    {
-        if (null !== $this->mongo) {
-            throw new \RuntimeException('The connection has already Mongo.');
-        }
-
-        $this->loggerCallable = $loggerCallable;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLoggerCallable()
-    {
-        return $this->loggerCallable;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setLogDefault(array $logDefault)
-    {
-        if (null !== $this->mongo) {
-            throw new \RuntimeException('The connection has already Mongo.');
-        }
-
-        $this->logDefault = $logDefault;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLogDefault()
-    {
-        return $this->logDefault;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getMongo()
     {
         if (null === $this->mongo) {
-            if (null !== $this->loggerCallable) {
-                if ( class_exists('MongoClient') ) {
-                    $this->mongo = new \Mongator\Logger\LoggableMongoClient($this->server);
-                } else {
-                    $this->mongo = new \Mongator\Logger\LoggableMongo($this->server);
-                }
-
-                $this->mongo->setLoggerCallable($this->loggerCallable);
-                if (null !== $this->logDefault) {
-                    $this->mongo->setLogDefault($this->logDefault);
-                }
-            } else {
-                if ( class_exists('MongoClient') ) {
-                    $this->mongo = new \MongoClient($this->server, $this->options);
-                } else {
-                    $this->mongo = new \Mongo($this->server, $this->options);
-                }
-            }
+			$this->mongo = new MongoDBClient($this->server, $this->options);
         }
 
         return $this->mongo;
@@ -211,7 +153,7 @@ class Connection implements ConnectionInterface
     public function getMongoDB()
     {
         if (null === $this->mongoDB) {
-            $this->mongoDB = $this->getMongo()->selectDB($this->dbName);
+            $this->mongoDB = $this->getMongo()->selectDatabase($this->dbName);
         }
 
         return $this->mongoDB;

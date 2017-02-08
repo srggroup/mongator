@@ -29,7 +29,6 @@ class Mongator
     private $metadataFactory;
     private $fieldsCache;
     private $dataCache;
-    private $loggerCallable;
     private $unitOfWork;
     private $connections;
     private $defaultConnectionName;
@@ -42,14 +41,12 @@ class Mongator
      * Constructor.
      *
      * @param \Mongator\MetadataFactory $metadataFactory The metadata factory.
-     * @param mixed                     $loggerCallable  The logger callable (optional, null by default).
      *
      * @api
      */
-    public function __construct(MetadataFactory $metadataFactory, $loggerCallable = null)
+    public function __construct(MetadataFactory $metadataFactory)
     {
         $this->metadataFactory = $metadataFactory;
-        $this->loggerCallable = $loggerCallable;
         $this->unitOfWork = new UnitOfWork($this);
         $this->connections = array();
         $this->repositories = array();
@@ -116,18 +113,6 @@ class Mongator
     }
 
     /**
-     * Returns the logger callable.
-     *
-     * @return mixed The logger callable.
-     *
-     * @api
-     */
-    public function getLoggerCallable()
-    {
-        return $this->loggerCallable;
-    }
-
-    /**
      * Returns the UnitOfWork.
      *
      * @return UnitOfWork The UnitOfWork.
@@ -149,13 +134,6 @@ class Mongator
      */
     public function setConnection($name, ConnectionInterface $connection)
     {
-        if (null !== $this->loggerCallable) {
-            $connection->setLoggerCallable($this->loggerCallable);
-            $connection->setLogDefault(array('connection' => $name));
-        } else {
-            $connection->setLoggerCallable(null);
-        }
-
         $this->connections[$name] = $connection;
     }
 
@@ -383,7 +361,7 @@ class Mongator
     public function ensureAllIndexes()
     {
         foreach ($this->getAllRepositories() as $repository) {
-            $repository->ensureIndexes();
+            $repository->createIndexes();
         }
     }
 

@@ -153,7 +153,7 @@ abstract class Repository
     /**
      * Returns the collection.
      *
-     * @return \MongoCollection The collection.
+     * @return \MongoDB\Collection The collection.
      *
      * @api
      */
@@ -293,7 +293,7 @@ abstract class Repository
      */
     public function update(array $query, array $newObject, array $options = array())
     {
-        return $this->getCollection()->update($query, $newObject, $options);
+        return $this->getCollection()->updateMany($query, $newObject, $options);
     }
 
     /**
@@ -308,7 +308,7 @@ abstract class Repository
      */
     public function remove(array $query = array(), array $options = array())
     {
-        return $this->getCollection()->remove($query, $options);
+        return $this->getCollection()->deleteMany($query, $options);
     }
 
     /**
@@ -320,7 +320,7 @@ abstract class Repository
      *
      * @api
      */
-    public function ensureIndexes($delete = true)
+    public function createIndexes($delete = true)
     {
         $indexManager = new IndexManager($this);
 
@@ -337,7 +337,9 @@ abstract class Repository
      *
      * @return array The result
      *
-     * @see \MongoCollection::group()
+     * @see \MongoDB\Collection::command()
+	 *
+	 * @deprecated MongoDB\Collection::group() is not implemented yet, use command()
      *
      * @api
      */

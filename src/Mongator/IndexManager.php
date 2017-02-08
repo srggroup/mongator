@@ -79,7 +79,7 @@ class IndexManager
      */
     public function getDiff()
     {
-        $set = $this->getIndexInfo();
+        $set = $this->listIndexes();
         unset($set['_id_1']);
 
         $present = array();
@@ -119,21 +119,21 @@ class IndexManager
 
         if ($delete) {
             foreach ($diff['unknown'] as $index) {
-                $this->deleteIndex($index['name']);
+                $this->dropIndex($index['name']);
             }
         }
 
         foreach ($diff['missing'] as $name => $index) {
-            $this->ensureIndex($index['keys'], $index['options']);
+            $this->createIndex($index['keys'], $index['options']);
         }
 
         return true;
     }
 
-    private function deleteIndex($name)
+    private function dropIndex($name)
     {
         $command = array(
-            'deleteIndexes' => $this->collection->getName(),
+            'dropIndexes' => $this->collection->getCollectionName(),
             'index' => $name
         );
 
@@ -142,36 +142,36 @@ class IndexManager
         if ( !is_array($result) && !isset($result['ok']) ) {
             throw new \RuntimeException(sprintf(
                 'Unable to delete index "%s" at collection %s',
-                $name, $this->collection->getName()
+                $name, $this->collection->getCollectionName()
             ));
         }
 
         if ( (int) $result['ok'] != 1 ) {
             throw new \RuntimeException(sprintf(
                 'Unable to delete index "%s" at collection %s, message "%s"',
-                $name, $this->collection->getName(), $result['errmsg']
+                $name, $this->collection->getCollectionName(), $result['errmsg']
             ));
         }
 
         return true;
     }
 
-    private function ensureIndex(array $config, array $options = array())
+    private function createIndex(array $config, array $options = array())
     {
-        if ( !$this->collection->ensureIndex($config, $options) ) {
+        if ( !$this->collection->createIndex($config, $options) ) {
             throw new \RuntimeException(sprintf(
                 'Unable to create index "%s" at collection %s',
-                $name, $this->collection->getName()
+                $name, $this->collection->getCollectionName()
             ));
         }
 
         return true;
     }
 
-    private function getIndexInfo()
+    private function listIndexes()
     {
         $indexes = array();
-        foreach ( $this->collection->getIndexInfo() as $index ) {
+        foreach ( $this->collection->listIndexes() as $index ) {
             $name = $this->generateIndexKeyFromDB($index);
             $indexes[$name] = $index;
         }
