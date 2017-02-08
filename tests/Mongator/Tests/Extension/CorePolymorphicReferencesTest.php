@@ -95,7 +95,7 @@ class CorePolymorphicReferencesTest extends TestCase
     {
         $author = $this->mongator->create('Model\Author');
         $article = $this->mongator->create('Model\Article')->setLike($author);
-        $author->setId(new \MongoId());
+        $author->setId(new ObjectID());
         $article->updateReferenceFields();
         $this->assertSame(array(
             '_MongatorDocumentClass' => 'Model\Author',
@@ -107,7 +107,7 @@ class CorePolymorphicReferencesTest extends TestCase
     {
         $author = $this->mongator->create('Model\Author');
         $article = $this->mongator->create('Model\Article')->setFriend($author);
-        $author->setId(new \MongoId());
+        $author->setId(new ObjectID());
         $article->updateReferenceFields();
         $this->assertSame(array(
             'name' => 'au',
@@ -143,10 +143,10 @@ class CorePolymorphicReferencesTest extends TestCase
     {
         $article = $this->mongator->create('Model\Article');
         $related = $article->getRelated();
-        $author1 = $this->mongator->create('Model\Author')->setId(new \MongoId());
-        $author2 = $this->mongator->create('Model\Author')->setId(new \MongoId());
-        $category1 = $this->mongator->create('Model\Category')->setId(new \MongoId());
-        $user1 = $this->mongator->create('Model\User')->setId(new \MongoId());
+        $author1 = $this->mongator->create('Model\Author')->setId(new ObjectID());
+        $author2 = $this->mongator->create('Model\Author')->setId(new ObjectID());
+        $category1 = $this->mongator->create('Model\Category')->setId(new ObjectID());
+        $user1 = $this->mongator->create('Model\User')->setId(new ObjectID());
         $related->add(array($author1, $author2, $category1, $user1));
 
         $article->updateReferenceFields();
@@ -161,19 +161,19 @@ class CorePolymorphicReferencesTest extends TestCase
     public function testDocumentUpdateReferenceFieldsReferencesManyNotNew()
     {
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(),
+            '_id' => new ObjectID(),
             'related' => $relatedRef = array(
-                array('_MongatorDocumentClass' => 'Model\Author', 'id' => new \MongoId()),
-                array('_MongatorDocumentClass' => 'Model\Author', 'id' => new \MongoId()),
-                array('_MongatorDocumentClass' => 'Model\Category', 'id' => new \MongoId()),
-                array('_MongatorDocumentClass' => 'Model\Category', 'id' => new \MongoId()),
+                array('_MongatorDocumentClass' => 'Model\Author', 'id' => new ObjectID()),
+                array('_MongatorDocumentClass' => 'Model\Author', 'id' => new ObjectID()),
+                array('_MongatorDocumentClass' => 'Model\Category', 'id' => new ObjectID()),
+                array('_MongatorDocumentClass' => 'Model\Category', 'id' => new ObjectID()),
             ),
         ));
         $related = $article->getRelated();
         $add = array();
-        $related->add($add[] = $this->mongator->create('Model\User')->setId(new \MongoId()));
-        $related->add($add[] = $this->mongator->create('Model\Author')->setId(new \MongoId()));
-        $related->add($add[] = $this->mongator->create('Model\Author')->setId(new \MongoId()));
+        $related->add($add[] = $this->mongator->create('Model\User')->setId(new ObjectID()));
+        $related->add($add[] = $this->mongator->create('Model\Author')->setId(new ObjectID()));
+        $related->add($add[] = $this->mongator->create('Model\Author')->setId(new ObjectID()));
         $related->remove($this->mongator->create('Model\Author')->setId($relatedRef[1]['id']));
         $related->remove($this->mongator->create('Model\Category')->setId($relatedRef[3]['id']));
 
@@ -191,10 +191,10 @@ class CorePolymorphicReferencesTest extends TestCase
     {
         $article = $this->mongator->create('Model\Article');
         $elements = $article->getElements();
-        $element1 = $this->mongator->create('Model\FormElement')->setId(new \MongoId());
-        $element2 = $this->mongator->create('Model\FormElement')->setId(new \MongoId());
-        $textareaElement1 = $this->mongator->create('Model\TextareaFormElement')->setId(new \MongoId());
-        $radioElement1 = $this->mongator->create('Model\RadioFormElement')->setId(new \MongoId());
+        $element1 = $this->mongator->create('Model\FormElement')->setId(new ObjectID());
+        $element2 = $this->mongator->create('Model\FormElement')->setId(new ObjectID());
+        $textareaElement1 = $this->mongator->create('Model\TextareaFormElement')->setId(new ObjectID());
+        $radioElement1 = $this->mongator->create('Model\RadioFormElement')->setId(new ObjectID());
         $elements->add(array($element1, $element2, $textareaElement1, $radioElement1));
 
         $article->updateReferenceFields();
@@ -209,19 +209,19 @@ class CorePolymorphicReferencesTest extends TestCase
     public function testDocumentUpdateReferenceFieldsReferencesManyNotNewDiscriminatorMap()
     {
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(),
+            '_id' => new ObjectID(),
             'elements' => $elementsRef = array(
-                array('type' => 'element', 'id' => new \MongoId()),
-                array('type' => 'element', 'id' => new \MongoId()),
-                array('type' => 'textarea', 'id' => new \MongoId()),
-                array('type' => 'textarea', 'id' => new \MongoId()),
+                array('type' => 'element', 'id' => new ObjectID()),
+                array('type' => 'element', 'id' => new ObjectID()),
+                array('type' => 'textarea', 'id' => new ObjectID()),
+                array('type' => 'textarea', 'id' => new ObjectID()),
             ),
         ));
         $elements = $article->getElements();
         $add = array();
-        $elements->add($add[] = $this->mongator->create('Model\RadioFormElement')->setId(new \MongoId()));
-        $elements->add($add[] = $this->mongator->create('Model\FormElement')->setId(new \MongoId()));
-        $elements->add($add[] = $this->mongator->create('Model\FormElement')->setId(new \MongoId()));
+        $elements->add($add[] = $this->mongator->create('Model\RadioFormElement')->setId(new ObjectID()));
+        $elements->add($add[] = $this->mongator->create('Model\FormElement')->setId(new ObjectID()));
+        $elements->add($add[] = $this->mongator->create('Model\FormElement')->setId(new ObjectID()));
         $elements->remove($this->mongator->create('Model\FormElement')->setId($elementsRef[1]['id']));
         $elements->remove($this->mongator->create('Model\TextareaFormElement')->setId($elementsRef[3]['id']));
 

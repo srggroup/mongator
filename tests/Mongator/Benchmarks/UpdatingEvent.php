@@ -12,7 +12,7 @@
 namespace Mongator\Benchmarks;
 
 use MongoClient;
-use MongoId;
+use MongoDB\BSON\ObjectID;
 
 class UpdatingEvent extends AthleticEvent
 {

@@ -12,6 +12,7 @@
 namespace Mongator\Tests;
 
 use Mongator\IdentityMap;
+use MongoDB\BSON\ObjectID;
 
 class IdentityMapTest extends TestCase
 {
@@ -19,7 +20,7 @@ class IdentityMapTest extends TestCase
     {
         $articles = array();
         for ($i = 1; $i <= 10; $i ++) {
-            $articles[$i] = $this->mongator->create('Model\Article')->setId(new \MongoId());
+            $articles[$i] = $this->mongator->create('Model\Article')->setId(new ObjectID());
         }
 
         $identityMap = new IdentityMap();

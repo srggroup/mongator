@@ -13,6 +13,7 @@ namespace Mongator\Tests\Document;
 
 use Mongator\Tests\TestCase;
 use Mongator\Document\Document as BaseDocument;
+use MongoDB\BSON\ObjectID;
 
 class Document extends BaseDocument
 {
@@ -25,7 +26,7 @@ class DocumentTest extends TestCase
         $document = new Document($this->mongator);
         $this->assertNull($document->getId());
 
-        $id = new \MongoId('4af9f23d8ead0e1d32000000');
+        $id = new ObjectID('4af9f23d8ead0e1d32000000');
         $this->assertSame($document, $document->setId($id));
         $this->assertSame($id, $document->getId());
     }

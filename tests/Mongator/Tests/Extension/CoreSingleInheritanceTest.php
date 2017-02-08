@@ -12,6 +12,7 @@
 namespace Mongator\Tests\Extension;
 
 use Mongator\Tests\TestCase;
+use MongoDB\BSON\ObjectID;
 
 class CoreSingleInheritanceTest extends TestCase
 {
@@ -137,7 +138,7 @@ class CoreSingleInheritanceTest extends TestCase
             'default' => 234,
         ), $formElement->queryForSave());
         $formElement->clearModified();
-        $formElement->setId(new \MongoId());
+        $formElement->setId(new ObjectID());
         $formElement->setIsNew(false);
         $this->assertSame(array(), $formElement->queryForSave());
 
@@ -148,7 +149,7 @@ class CoreSingleInheritanceTest extends TestCase
             'default' => '456',
         ), $textareaFormElement->queryForSave());
         $textareaFormElement->clearModified();
-        $textareaFormElement->setId(new \MongoId());
+        $textareaFormElement->setId(new ObjectID());
         $textareaFormElement->setIsNew(false);
         $this->assertSame(array(), $textareaFormElement->queryForSave());
 

@@ -4,6 +4,8 @@ namespace Mongator\Tests\Extension;
 
 use Mongator\Tests\TestCase;
 use Mongator\Query\Query;
+use MongoDB\BSON\ObjectID;
+use MongoDB\BSON\UTCDateTime;
 
 class QueryDefaultFindersTest extends TestCase
 {
@@ -17,21 +19,21 @@ class QueryDefaultFindersTest extends TestCase
 
     public function testFindById()
     {
-        $id = new \MongoId();
+        $id = new ObjectID();
         $query = $this->createQuery()->findById($id);
         $this->assertEquals(array('_id' => $id), $query->getCriteria());
     }
 
     public function testFindByIdUsesIdToMongo()
     {
-        $id = new \MongoId();
+        $id = new ObjectID();
         $query = $this->createQuery()->findById((string) $id);
         $this->assertEquals(array('_id' => $id), $query->getCriteria());
     }
 
     public function testFindByIds()
     {
-        $ids = array(new \MongoId(), new \MongoId(), new \MongoId());
+        $ids = array(new ObjectID(), new ObjectID(), new ObjectID());
         $query = $this->createQuery()->findByIds($ids);
         $this->assertEquals(array('_id' => array('$in' => $ids)), $query->getCriteria());
     }
@@ -57,7 +59,7 @@ class QueryDefaultFindersTest extends TestCase
     public function testDateCasting()
     {
         $date = new \DateTime();
-        $mongoDate = new \MongoDate($date->getTimestamp());
+        $mongoDate = new UTCDateTime($date->getTimestamp());
         $expected = array('date' => $mongoDate);
 
         $query = $this->createQuery()->findByDate($mongoDate);
@@ -146,7 +148,7 @@ class QueryDefaultFindersTest extends TestCase
 
     private function doTestFindByReference($method, $class, $field)
     {
-        $id = new \MongoId();
+        $id = new ObjectID();
         $expected = array($field => $id);
 
         $query = $this->createQuery()->{$method}($id);
@@ -165,7 +167,7 @@ class QueryDefaultFindersTest extends TestCase
 
     public function testFindByReferenceAcceptsString()
     {
-        $id = new \MongoId();
+        $id = new ObjectID();
         $query = $this->createQuery()->findByAuthor((string) $id);
         $this->assertEquals(array('author' => $id), $query->getCriteria());
     }
@@ -193,7 +195,7 @@ class QueryDefaultFindersTest extends TestCase
     {
         $query = $this->createQuery();
 
-        $ids = array(new \MongoId(), new \MongoId(), new \MongoId());
+        $ids = array(new ObjectID(), new ObjectID(), new ObjectID());
         $query->{$method}($ids);
         $expected = array($field => array('$in' => $ids));
         $this->assertEquals($expected, $query->getCriteria());

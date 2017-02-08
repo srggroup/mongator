@@ -11,6 +11,8 @@
 
 namespace Mongator\Type;
 
+use MongoDB\BSON\UTCDateTime;
+
 /**
  * DateType.
  *
@@ -31,7 +33,7 @@ class DateType extends Type
             $value = strtotime($value);
         }
 
-        return new \MongoDate($value);
+        return new UTCDateTime($value);
     }
 
     /**
@@ -50,7 +52,7 @@ class DateType extends Type
      */
     public function toMongoInString()
     {
-        return '%to% = %from%; if (%to% instanceof \DateTime) { %to% = %from%->getTimestamp(); } elseif (is_string(%to%)) { %to% = strtotime(%from%); } %to% = new \MongoDate(%to%);';
+        return '%to% = %from%; if (%to% instanceof \DateTime) { %to% = %from%->getTimestamp(); } elseif (is_string(%to%)) { %to% = strtotime(%from%); } %to% = new \MongoDB\BSON\UTCDateTime(%to%);';
     }
 
     /**
@@ -58,6 +60,6 @@ class DateType extends Type
      */
     public function toPHPInString()
     {
-        return '%to% = new \DateTime(); %to%->setTimestamp(%from%->sec);';
+        return '%to% = %from%->toDateTime();';
     }
 }

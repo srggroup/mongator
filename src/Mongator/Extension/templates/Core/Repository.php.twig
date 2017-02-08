@@ -131,7 +131,7 @@
             }
 
             if ($a) {
-                $collection->batchInsert($a, $batchInsertOptions);
+                $collection->insertMany($a, $batchInsertOptions);
 
                 foreach ($a as $oid => $data) {
                     $document = $inserts[$oid];
@@ -168,7 +168,7 @@
                 }
 
 
-                $collection->insert($data);
+                $collection->insertOne($data);
 
                 $document->setId($data['_id']);
                 $document->setIsNew(false);
@@ -189,7 +189,7 @@
                 $document->preUpdateEvent();
 
                 $query = $document->queryForSave();
-                $collection->update(array('_id' => $this->idToMongo($document->getId())), $query, $updateOptions);
+                $collection->updateMany(array('_id' => $this->idToMongo($document->getId())), $query, $updateOptions);
                 $document->clearModified();
 {% if config_class._has_groups %}
                 $document->resetGroups();
@@ -220,7 +220,7 @@
             $document->processOnDelete();
         }
 
-        $this->getCollection()->remove(array('_id' => array('$in' => $ids)));
+        $this->getCollection()->deleteMany(array('_id' => array('$in' => $ids)));
 
         foreach ($documents as $document) {
             $document->postDeleteEvent();

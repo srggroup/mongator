@@ -12,6 +12,7 @@
 namespace Mongator\Tests\Extension;
 
 use Mongator\Tests\TestCase;
+use MongoDB\BSON\ObjectID;
 
 class CoreQueryForSaveTest extends TestCase
 {
@@ -34,7 +35,7 @@ class CoreQueryForSaveTest extends TestCase
     {
         $article = $this->mongator->create('Model\Article');
         $article->setDocumentData(array(
-            '_id'      => new \MongoId(),
+            '_id'      => new ObjectID(),
             'title'    => 'foo',
             'content'  => 'bar',
             'note'     => 'ups',
@@ -60,7 +61,7 @@ class CoreQueryForSaveTest extends TestCase
     public function testDocumentReferencesOneInsert()
     {
         $article = $this->mongator->create('Model\Article')
-            ->setAuthor($this->mongator->create('Model\Author')->setId($id = new \MongoId())->setIsNew(false))
+            ->setAuthor($this->mongator->create('Model\Author')->setId($id = new ObjectID())->setIsNew(false))
         ;
 
         $this->assertSame(array(
@@ -71,10 +72,10 @@ class CoreQueryForSaveTest extends TestCase
     public function testDocumentReferencesOneUpdate()
     {
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(),
-            'author' => new \MongoId(),
+            '_id' => new ObjectID(),
+            'author' => new ObjectID(),
         ));
-        $article->setAuthor($this->mongator->create('Model\Author')->setId($id = new \MongoId())->setIsNew(false));
+        $article->setAuthor($this->mongator->create('Model\Author')->setId($id = new ObjectID())->setIsNew(false));
 
         $this->assertSame(array(
             '$set' => array(
@@ -88,7 +89,7 @@ class CoreQueryForSaveTest extends TestCase
         $categories = array();
         $ids = array();
         for ($i = 1; $i <= 10; $i ++) {
-            $categories[] = $this->mongator->create('Model\Category')->setId($ids[] = new \MongoId());
+            $categories[] = $this->mongator->create('Model\Category')->setId($ids[] = new ObjectID());
         }
 
         $article = $this->mongator->create('Model\Article');
@@ -128,7 +129,7 @@ class CoreQueryForSaveTest extends TestCase
     public function testDocumentEmbeddedsOneUpdate()
     {
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(),
+            '_id' => new ObjectID(),
             'title' => 'foo',
             'source' => array(
                 'name' => 'bar',
@@ -161,7 +162,7 @@ class CoreQueryForSaveTest extends TestCase
     public function testDocumentEmbeddedsOneChange()
     {
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(),
+            '_id' => new ObjectID(),
             'title' => 'foo',
             'source' => array(
                 'name' => 'bar',
@@ -196,7 +197,7 @@ class CoreQueryForSaveTest extends TestCase
     public function testDocumentEmbeddedsOneChangeDeep()
     {
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(),
+            '_id' => new ObjectID(),
             'title' => 'foo',
             'source' => array(
                 'name' => 'bar',
@@ -224,7 +225,7 @@ class CoreQueryForSaveTest extends TestCase
     public function testDocumentEmbeddedsOneRemove()
     {
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(),
+            '_id' => new ObjectID(),
             'title' => 'foo',
             'source' => array(
                 'name' => 'bar',
@@ -245,7 +246,7 @@ class CoreQueryForSaveTest extends TestCase
     public function testDocumentEmbeddedsOneRemoveDeep()
     {
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(),
+            '_id' => new ObjectID(),
             'title' => 'foo',
             'source' => array(
                 'name' => 'bar',
@@ -323,7 +324,7 @@ class CoreQueryForSaveTest extends TestCase
         $this->markTestSkipped('This test does not make sense: have conflicting mods in update');
 
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(),
+            '_id' => new ObjectID(),
             'title' => 'foo',
             'comments' => array(
                 array(

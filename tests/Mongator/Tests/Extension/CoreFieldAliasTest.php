@@ -12,6 +12,7 @@
 namespace Mongator\Tests\Extension;
 
 use Mongator\Tests\TestCase;
+use MongoDB\BSON\ObjectID;
 
 class CoreFieldAliasTest extends TestCase
 {
@@ -111,7 +112,7 @@ class CoreFieldAliasTest extends TestCase
     {
         $article = $this->mongator->create('Model\Article');
         $article->setDocumentData(array(
-            '_id' => new \MongoId(),
+            '_id' => new ObjectID(),
             'basatos' => '234',
         ));
 
@@ -146,7 +147,7 @@ class CoreFieldAliasTest extends TestCase
     {
         $article = $this->mongator->create('Model\Article');
         $article->setDocumentData(array(
-            '_id' => new \MongoId(),
+            '_id' => new ObjectID(),
             'source' => array(
                 'desde' => '234',
             ),

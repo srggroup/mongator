@@ -12,6 +12,7 @@
 namespace Mongator\Tests\Type;
 
 use Mongator\Type\DateType;
+use MongoDB\BSON\UTCDateTime;
 
 class DateTypeTest extends TestCase
 {
@@ -20,14 +21,14 @@ class DateTypeTest extends TestCase
         $type = new DateType();
 
         $time = time();
-        $this->assertEquals(new \MongoDate($time), $type->toMongo($time));
+        $this->assertEquals(new UTCDateTime($time), $type->toMongo($time));
 
         $date = new \DateTime();
         $date->setTimestamp($time);
-        $this->assertEquals(new \MongoDate($time), $type->toMongo($date));
+        $this->assertEquals(new UTCDateTime($time), $type->toMongo($date));
 
         $string = '2010-02-20';
-        $this->assertEquals(new \MongoDate(strtotime($string)), $type->toMongo($string));
+        $this->assertEquals(new UTCDateTime(strtotime($string)), $type->toMongo($string));
     }
 
     public function testToPHP()
@@ -38,7 +39,7 @@ class DateTypeTest extends TestCase
         $date = new \DateTime();
         $date->setTimestamp($time);
 
-        $this->assertEquals($date, $type->toPHP(new \MongoDate($time)));
+        $this->assertEquals($date, $type->toPHP(new UTCDateTime($time)));
     }
 
     public function testToMongoInString()
@@ -47,14 +48,14 @@ class DateTypeTest extends TestCase
         $function = $this->getTypeFunction($type->toMongoInString());
 
         $time = time();
-        $this->assertEquals(new \MongoDate($time), $function($time));
+        $this->assertEquals(new UTCDateTime($time), $function($time));
 
         $date = new \DateTime();
         $date->setTimestamp($time);
-        $this->assertEquals(new \MongoDate($time), $function($date));
+        $this->assertEquals(new UTCDateTime($time), $function($date));
 
         $string = '2010-02-20';
-        $this->assertEquals(new \MongoDate(strtotime($string)), $function($string));
+        $this->assertEquals(new UTCDateTime(strtotime($string)), $function($string));
     }
 
     public function testToPHPInString()
@@ -66,6 +67,6 @@ class DateTypeTest extends TestCase
         $date = new \DateTime();
         $date->setTimestamp($time);
 
-        $this->assertEquals($date, $function(new \MongoDate($time)));
+        $this->assertEquals($date, $function(new UTCDateTime($time)));
     }
 }

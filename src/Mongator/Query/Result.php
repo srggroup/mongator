@@ -11,6 +11,8 @@
 
 namespace Mongator\Query;
 
+use MongoDB\Driver\Cursor;
+
 class Result implements \Iterator, \Countable, \Serializable
 {
     private $count;
@@ -18,6 +20,7 @@ class Result implements \Iterator, \Countable, \Serializable
 
     public function __construct($input)
     {
+    	if ( $input instanceof Cursor) return $this->iterator = new \IteratorIterator($input);
         if ( $input instanceOf \Iterator ) return $this->iterator = $input;
         if ( $input instanceOf \ArrayObject ) return $this->iterator = $input->getIterator();
 

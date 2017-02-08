@@ -5,7 +5,7 @@
     /**
      * Find by "{{ name }}" reference.
      *
-     * @param MongoId|Document $value
+     * @param \MongoDB\BSON\ObjectId|Document $value
      *
      * @return {{ class }}Query The query with added criteria (fluent interface).
      */
@@ -100,11 +100,11 @@
         {% if field.type == 'date' %}
         $castValue = null;
         if (($value instanceOf \DateTime)) {
-            $castValue = new \MongoDate($value->getTimestamp());
-        } else if ($value instanceof \MongoDate) {
+            $castValue = new \MongoDB\BSON\UTCDateTime($value->getTimestamp());
+        } else if ($value instanceof \MongoDB\BSON\UTCDateTime) {
             $castValue = $value;
         } else if (is_numeric($value)) {
-            $castValue = new \MongoDate($value);
+            $castValue = new \MongoDB\BSON\UTCDateTime($value);
         }
 
         if (!$castValue) throw new \Exception('Bad value: could not convert to MongoDate');

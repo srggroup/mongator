@@ -55,7 +55,7 @@ abstract class Document extends AbstractDocument
     /**
      * Returns the id of document.
      *
-     * @return \MongoId|null The id of the document or null if it is new.
+     * @return \MongoDB\BSON\ObjectID|null The id of the document or null if it is new.
      *
      * @api
      */

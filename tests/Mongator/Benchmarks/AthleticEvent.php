@@ -17,7 +17,7 @@ use Mongator\Mongator;
 use Mongator\Cache\ArrayCache;
 use Mongator\Document\Document;
 use DateTime;
-use MongoId;
+use MongoDB\BSON\ObjectID;
 use MongoBinData;
 
 

@@ -2,6 +2,7 @@
 
 namespace Mongator\Query;
 use ArrayObject;
+use MongoDB\BSON\ObjectID;
 
 abstract class LocalChunk implements ChunkInterface
 {
@@ -153,7 +154,7 @@ abstract class LocalChunk implements ChunkInterface
             if ((!$this->filterFuncName) || $this->{$this->filterFuncName}($elem)) {
                 $total++;
                 if ($all || (($count >= $start) && ($count < $end))) {
-                    $ids[] = new \MongoId($id);
+                    $ids[] = new ObjectID($id);
                 }
                 $count++;
             }

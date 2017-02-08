@@ -16,6 +16,7 @@ use Mongator\Connection;
 use Mongator\ConnectionInterface;
 use Mongator\Mongator;
 use Mongator\Query\Query;
+use MongoDB\BSON\ObjectID;
 
 class Repository extends BaseRepository
 {
@@ -181,13 +182,13 @@ class RepositoryTest extends TestCase
     {
         $ids = $this->mongator->getRepository('Model\Article')->idsToMongo(array(
             '4af9f23d8ead0e1d32000000',
-            $id1 = new \MongoId(),
+            $id1 = new ObjectID(),
             '1af9f23d8ead0e1d32000000',
         ));
         $this->assertSame(3, count($ids));
-        $this->assertInstanceOf('MongoId', $ids[0]);
+        $this->assertInstanceOf('\MongoDB\BSON\ObjectID', $ids[0]);
         $this->assertSame($id1, $ids[1]);
-        $this->assertInstanceOf('MongoId', $ids[2]);
+        $this->assertInstanceOf('\MongoDB\BSON\ObjectID', $ids[2]);
     }
 
     public function testFindByIdAndFindOneById()

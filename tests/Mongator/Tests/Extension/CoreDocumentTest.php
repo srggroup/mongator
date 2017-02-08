@@ -13,6 +13,7 @@ namespace Mongator\Tests\Extension;
 
 use Mongator\Tests\TestCase;
 use Mongator\Group\EmbeddedGroup;
+use MongoDB\BSON\ObjectID;
 
 class CoreDocumentTest extends TestCase
 {
@@ -112,7 +113,7 @@ class CoreDocumentTest extends TestCase
         $this->assertNull($article->getAuthorId());
 
         $author = $this->mongator->create('Model\Author');
-        $author->setId($id = new \MongoId(self::EXAMPLE_MONGO_ID));
+        $author->setId($id = new ObjectID(self::EXAMPLE_MONGO_ID));
         $author->setIsNew(false);
         $article->setAuthor($author);
         $this->assertSame($author, $article->getAuthor());
@@ -163,7 +164,7 @@ class CoreDocumentTest extends TestCase
      */
     public function testReferencesOneGetterQueryNotExist()
     {
-        $article = $this->mongator->create('Model\Article')->setAuthorId(new \MongoId(self::EXAMPLE_MONGO_ID));
+        $article = $this->mongator->create('Model\Article')->setAuthorId(new ObjectID(self::EXAMPLE_MONGO_ID));
         $article->getAuthor();
     }
 
@@ -216,7 +217,7 @@ class CoreDocumentTest extends TestCase
     {
         $author = $this->mongator->create('Model\Author');
         $article = $this->mongator->create('Model\Article')->setAuthor($author);
-        $author->setId(new \MongoId(self::EXAMPLE_MONGO_ID));
+        $author->setId(new ObjectID(self::EXAMPLE_MONGO_ID));
         $author->setIsNew(false);
         $article->updateReferenceFields();
         $this->assertSame($author->getId(), $article->getAuthorId());
@@ -228,7 +229,7 @@ class CoreDocumentTest extends TestCase
         $categories = $article->getCategories();
         $ids = array();
         for ($i = 1; $i <= 5; $i ++) {
-            $categories->add($this->mongator->create('Model\Category')->setId($ids[] = new \MongoId())->setIsNew(false));
+            $categories->add($this->mongator->create('Model\Category')->setId($ids[] = new ObjectID())->setIsNew(false));
         }
         $article->updateReferenceFields();
         $this->assertSame($ids, $article->getCategoryIds());
@@ -236,9 +237,9 @@ class CoreDocumentTest extends TestCase
 
     public function testUpdateReferenceFieldsReferencesManyNotNew()
     {
-        foreach (range(1,4) as $value) $baseIds[] = new \MongoId();
-        foreach (range(1,3) as $value) $sourceBaseIds[] = new \MongoId();
-        foreach (range(1,3) as $value) $commentBaseIds[] = new \MongoId();
+        foreach (range(1,4) as $value) $baseIds[] = new ObjectID();
+        foreach (range(1,3) as $value) $sourceBaseIds[] = new ObjectID();
+        foreach (range(1,3) as $value) $commentBaseIds[] = new ObjectID();
 
 
         $identityMap = $this->mongator->getRepository('Model\Category')->getIdentityMap();
@@ -252,7 +253,7 @@ class CoreDocumentTest extends TestCase
         }
 
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id' => new ObjectID(self::EXAMPLE_MONGO_ID),
             'categories' => $baseIds,
             'source' => array(
                 'categories' => $sourceBaseIds,
@@ -267,7 +268,7 @@ class CoreDocumentTest extends TestCase
         $categories = $article->getCategories();
         $addIds = array();
         for ($i = 1; $i <= 3; $i++) {
-            $categories->add($this->mongator->create('Model\Category')->setId($addIds[] = new \MongoId())->setIsNew(false));
+            $categories->add($this->mongator->create('Model\Category')->setId($addIds[] = new ObjectID())->setIsNew(false));
         }
         $categories->remove($this->mongator->create('Model\Category')->setId($baseIds[1])->setIsNew(false));
         $categories->remove($this->mongator->create('Model\Category')->setId($baseIds[3])->setIsNew(false));
@@ -275,7 +276,7 @@ class CoreDocumentTest extends TestCase
         $categories = $article->getSource()->getCategories();
         $sourceAddIds = array();
         for ($i = 1; $i <= 2; $i++) {
-            $categories->add($this->mongator->create('Model\Category')->setId($sourceAddIds[] = new \MongoId())->setIsNew(false));
+            $categories->add($this->mongator->create('Model\Category')->setId($sourceAddIds[] = new ObjectID())->setIsNew(false));
         }
         $categories->remove($this->mongator->create('Model\Category')->setId($sourceBaseIds[1])->setIsNew(false));
 
@@ -283,7 +284,7 @@ class CoreDocumentTest extends TestCase
         $categories = $comments[0]->getCategories();
         $commentAddIds = array();
         for ($i = 1; $i <= 3; $i++) {
-            $categories->add($this->mongator->create('Model\Category')->setId($commentAddIds[] = new \MongoId())->setIsNew(false));
+            $categories->add($this->mongator->create('Model\Category')->setId($commentAddIds[] = new ObjectID())->setIsNew(false));
         }
         $categories->remove($this->mongator->create('Model\Category')->setId($commentBaseIds[1])->setIsNew(false));
 
@@ -352,7 +353,7 @@ class CoreDocumentTest extends TestCase
         );
 
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id' => new ObjectID(self::EXAMPLE_MONGO_ID),
             'categories' => array($articleCategories[0]->getId(), $articleCategories[1]->getId()),
         ));
         $categories = $article->getCategories();
@@ -1239,7 +1240,7 @@ class CoreDocumentTest extends TestCase
     {
         $article = $this->mongator->create('Model\Article');
         $this->assertSame($article, $article->setDocumentData(array(
-            '_id'         => $id = new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id'         => $id = new ObjectID(self::EXAMPLE_MONGO_ID),
             '_query_hash' => $queryHash = md5(1),
             'title'       => 'foo',
             'isActive'    => 1,
@@ -1256,7 +1257,7 @@ class CoreDocumentTest extends TestCase
         $article = $this->mongator->create('Model\Article');
         $article->setTitle('foo');
         $article->setDocumentData(array(
-            '_id'   => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id'   => new ObjectID(self::EXAMPLE_MONGO_ID),
             'title' => 'foo',
         ), true);
         $this->assertFalse($article->isFieldModified('title'));
@@ -1266,7 +1267,7 @@ class CoreDocumentTest extends TestCase
     {
         $book = $this->mongator->create('Model\Book');
         $book->setDocumentData(array(
-            '_id' => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id' => new ObjectID(self::EXAMPLE_MONGO_ID),
         ));
         $this->assertFalse($book->isFieldModified('comment'));
         $this->assertFalse($book->isFieldModified('isHere'));
@@ -1385,7 +1386,7 @@ class CoreDocumentTest extends TestCase
     {
         $article = $this->mongator->create('Model\Article');
         $article->setDocumentData(array(
-            '_id'      => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id'      => new ObjectID(self::EXAMPLE_MONGO_ID),
             'title'    => 'bar',
             'content'  => 'foo',
             'isActive' => true,
@@ -1397,7 +1398,7 @@ class CoreDocumentTest extends TestCase
     {
         $article = $this->mongator->create('Model\Article');
         $article->setDocumentData(array(
-            '_id'      => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id'      => new ObjectID(self::EXAMPLE_MONGO_ID),
             'title'    => 'bar',
             'content'  => 'foo',
             'isActive' => true,
@@ -1407,7 +1408,7 @@ class CoreDocumentTest extends TestCase
 
         $article = $this->mongator->create('Model\Article');
         $article->setDocumentData(array(
-            '_id'      => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id'      => new ObjectID(self::EXAMPLE_MONGO_ID),
             'title'    => 'bar',
             'content'  => 'foo',
             'isActive' => true,
@@ -1420,7 +1421,7 @@ class CoreDocumentTest extends TestCase
     {
         $book = $this->mongator->create('Model\Book');
         $book->setDocumentData(array(
-            '_id'   => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id'   => new ObjectID(self::EXAMPLE_MONGO_ID),
             'title' => 'foo',
         ));
         $this->assertFalse($book->isModified());
@@ -1450,7 +1451,7 @@ class CoreDocumentTest extends TestCase
     public function testIsModifiedNotNewEmbeddedsOne()
     {
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id' => new ObjectID(self::EXAMPLE_MONGO_ID),
             'source' => array('name' => 'foo'),
         ));
         $this->assertFalse($article->isModified());
@@ -1465,7 +1466,7 @@ class CoreDocumentTest extends TestCase
         $this->assertTrue($article->isModified());
 
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id' => new ObjectID(self::EXAMPLE_MONGO_ID),
             'source' => array('info' => array('name' => 'foo')),
         ));
         $source = $article->getSource();
@@ -1520,7 +1521,7 @@ class CoreDocumentTest extends TestCase
     public function testIsModifiedNotNewEmbeddedsMany()
     {
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id' => new ObjectID(self::EXAMPLE_MONGO_ID),
             'comments' => array(
                 array('name' => 'foo'),
                 array('name' => 'bar'),
@@ -1561,7 +1562,7 @@ class CoreDocumentTest extends TestCase
         $this->assertSame('foo', $article->getTitle());
         $this->assertFalse($article->isModified());
 
-        $article = $this->mongator->create('Model\Article')->setDocumentData(array('_id' => new \MongoId(), 'title' => 'foo'))->setTitle('bar');
+        $article = $this->mongator->create('Model\Article')->setDocumentData(array('_id' => new ObjectID(), 'title' => 'foo'))->setTitle('bar');
         $article->clearModified();
         $this->assertSame('bar', $article->getTitle());
         $this->assertFalse($article->isModified());
@@ -1578,7 +1579,7 @@ class CoreDocumentTest extends TestCase
         $this->assertFalse($source->isModified());
         $this->assertFalse($article->isModified());
 
-        $article = $this->mongator->create('Model\Article')->setDocumentData(array('_id' => new \MongoId(), 'source' => array('name' => 'foo')));
+        $article = $this->mongator->create('Model\Article')->setDocumentData(array('_id' => new ObjectID(), 'source' => array('name' => 'foo')));
         $source = $article->getSource();
         $source->setName('bar');
         $article->setSource(null);
@@ -1600,7 +1601,7 @@ class CoreDocumentTest extends TestCase
         $this->assertFalse($article->isModified());
 
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(),
+            '_id' => new ObjectID(),
             'comments' => array(
                 array('name' => 'foo'),
                 array('name' => 'bar'),
@@ -1615,7 +1616,7 @@ class CoreDocumentTest extends TestCase
         $this->assertFalse($article->isModified());
 
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(),
+            '_id' => new ObjectID(),
             'comments' => array(
                 array('name' => 'foo'),
                 array('name' => 'bar'),
@@ -1630,7 +1631,7 @@ class CoreDocumentTest extends TestCase
         $this->assertFalse($article->isModified());
 
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(),
+            '_id' => new ObjectID(),
             'comments' => array(
                 array('name' => 'foo'),
                 array('name' => 'bar'),
@@ -1675,7 +1676,7 @@ class CoreDocumentTest extends TestCase
     {
         $article = $this->mongator->create('Model\Article');
         $article->setDocumentData(array(
-            '_id'     => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id'     => new ObjectID(self::EXAMPLE_MONGO_ID),
             'title'   => 'foo',
             'content' => 'bar',
             'note'    => 'foobar',
@@ -1723,7 +1724,7 @@ class CoreDocumentTest extends TestCase
     {
         $article = $this->mongator->create('Model\Article');
         $article->setDocumentData(array(
-            '_id'     => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id'     => new ObjectID(self::EXAMPLE_MONGO_ID),
             'title'   => 'foo',
             'content' => 'bar',
         ));
@@ -1775,7 +1776,7 @@ class CoreDocumentTest extends TestCase
     {
         $article = $this->mongator->create('Model\Article');
         $article->setDocumentData(array(
-            '_id'      => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id'      => new ObjectID(self::EXAMPLE_MONGO_ID),
             'title'    => 'bar',
             'content'  => 'foo',
             'isActive' => true,
@@ -1794,7 +1795,7 @@ class CoreDocumentTest extends TestCase
     {
         $book = $this->mongator->create('Model\Book');
         $book->setDocumentData(array(
-            '_id'   => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id'   => new ObjectID(self::EXAMPLE_MONGO_ID),
             'title' => 'foo',
         ));
         $this->assertSame(array(), $book->getFieldsModified());
@@ -1806,7 +1807,7 @@ class CoreDocumentTest extends TestCase
     public function testCleanFieldsModified()
     {
         $article = $this->mongator->create('Model\Article');
-        $article->setId(new \MongoId(self::EXAMPLE_MONGO_ID));
+        $article->setId(new ObjectID(self::EXAMPLE_MONGO_ID));
         $article->setIsNew(false);
         $article->setTitle('foo');
         $article->setNote('bar');
@@ -1839,7 +1840,7 @@ class CoreDocumentTest extends TestCase
     public function testIsEmbeddedOneChangedNotNew()
     {
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id' => new ObjectID(self::EXAMPLE_MONGO_ID),
             'title' => 'foo',
             'source' => array(
                 'name' => 'bar',
@@ -1897,7 +1898,7 @@ class CoreDocumentTest extends TestCase
     public function testGetOriginalEmbeddedOneChangedNotNew()
     {
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id' => new ObjectID(self::EXAMPLE_MONGO_ID),
             'title' => 'foo',
             'source' => array(
                 'name' => 'bar',
@@ -1955,7 +1956,7 @@ class CoreDocumentTest extends TestCase
     public function testGetEmbeddedsOneNotNew()
     {
         $article = $this->mongator->create('Model\Article')->setDocumentData(array(
-            '_id' => new \MongoId(self::EXAMPLE_MONGO_ID),
+            '_id' => new ObjectID(self::EXAMPLE_MONGO_ID),
             'source' => array('name' => 'foo'),
         ));
         $this->assertSame(array(), $article->getEmbeddedsOneChanged());

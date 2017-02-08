@@ -2,6 +2,8 @@
 
 namespace Mongator\Tests\Id;
 
+use MongoDB\BSON\ObjectID;
+
 class ABId
 {
     public $a;
@@ -10,8 +12,8 @@ class ABId
     public function __construct($id = null)
     {
         if ($id === null) {
-            $this->a = new \MongoId();
-            $this->b = new \MongoId();
+            $this->a = new ObjectID();
+            $this->b = new ObjectID();
         } else {
             $this->a = $id['a'];
             $this->b = $id['b'];

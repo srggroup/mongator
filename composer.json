@@ -40,6 +40,8 @@
         "ext-memcached": "Allow caching on Memcached"
     },
     "autoload": {
-        "psr-0": { "Mongator\\": "src/" }
+        "psr-0": {
+            "Mongator\\": "src/" ,
+        }
     }
 }

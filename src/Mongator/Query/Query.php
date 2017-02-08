@@ -12,6 +12,7 @@
 namespace Mongator\Query;
 
 use Mongator\Repository;
+use MongoDB\BSON\ObjectID;
 
 /**
  * Query.
@@ -33,7 +34,6 @@ abstract class Query implements \Countable, \IteratorAggregate
     private $skip;
     private $batchSize;
     private $hint;
-    private $slaveOkay;
     private $snapshot;
     private $timeout;
     private $text;
@@ -427,36 +427,6 @@ abstract class Query implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Sets the slave okay.
-     *
-     * @param Boolean|null $okay If it is okay to query the slave (true by default).
-     *
-     * @return \Mongator\Query\Query The query instance (fluent interface).
-     */
-    public function slaveOkay($okay = true)
-    {
-        if (null !== $okay) {
-            if (!is_bool($okay)) {
-                throw new \InvalidArgumentException('The slave okay is not a boolean.');
-            }
-        }
-
-        $this->slaveOkay = $okay;
-
-        return $this;
-    }
-
-    /**
-     * Returns the slave okay.
-     *
-     * @return Boolean|null The slave okay.
-     */
-    public function getSlaveOkay()
-    {
-        return $this->slaveOkay;
-    }
-
-    /**
      * Set if the snapshot mode is used.
      *
      * @param bool $snapshot If the snapshot mode is used.
@@ -619,38 +589,6 @@ abstract class Query implements \Countable, \IteratorAggregate
     {
         $cursor = $this->repository->getCollection()->find($this->criteria, $this->fields);
 
-        if (null !== $this->sort) {
-            $cursor->sort($this->sort);
-        }
-
-        if (null !== $this->limit) {
-            $cursor->limit($this->limit);
-        }
-
-        if (null !== $this->skip) {
-            $cursor->skip($this->skip);
-        }
-
-        if (null !== $this->batchSize) {
-            $cursor->batchSize($this->batchSize);
-        }
-
-        if (null !== $this->hint) {
-            $cursor->hint($this->hint);
-        }
-
-        if (null !== $this->slaveOkay) {
-            $cursor->slaveOkay($this->slaveOkay);
-        }
-
-        if ($this->snapshot) {
-            $cursor->snapshot();
-        }
-
-        if (null !== $this->timeout) {
-            $cursor->timeout($this->timeout);
-        }
-
         $result = new Result($cursor);
         $result->setCount(function() use ($cursor) {
             return $cursor->count();
@@ -743,11 +681,11 @@ abstract class Query implements \Countable, \IteratorAggregate
 
     protected function valueToMongoId($value)
     {
-        if (is_string($value)) return new \MongoId($value);
+        if (is_string($value)) return new ObjectID($value);
 
         if (!is_object($value)) $this->throwBadReferenceException();
 
-        if ($value instanceOf \MongoId) return $value;
+        if ($value instanceOf ObjectID) return $value;
         if ($value instanceOf \Mongator\Document\Document) return $value->getId();
 
         $this->throwBadReferenceException();
@@ -755,6 +693,6 @@ abstract class Query implements \Countable, \IteratorAggregate
 
     protected function throwBadReferenceException()
     {
-        throw new \Exception('Document or MongoId needed for reference query');
+        throw new \Exception('Document or ObjectID needed for reference query');
     }
 }
