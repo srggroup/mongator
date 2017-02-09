@@ -13,6 +13,7 @@ namespace Mongator\Query;
 
 use Mongator\Repository;
 use MongoDB\BSON\ObjectID;
+use MongoDB\Driver\Cursor;
 
 /**
  * Query.
@@ -577,22 +578,20 @@ abstract class Query implements \Countable, \IteratorAggregate
      */
     public function count()
     {
-        return $this->execute()->count();
+    	$collection = $this->getRepository()->getCollection();
+    	return $collection->count($this->criteria);
     }
 
     /**
      * Create a cursor with the data of the query.
      *
-     * @return \MongoCursor A cursor with the data of the query.
+     * @return Result A cursor with the data of the query.
      */
     public function createCursor()
     {
         $cursor = $this->repository->getCollection()->find($this->criteria, $this->fields);
 
         $result = new Result($cursor);
-        $result->setCount(function() use ($cursor) {
-            return $cursor->count();
-        });
 
         return $result;
     }

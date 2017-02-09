@@ -3,12 +3,16 @@
     /**
      * Imports data from an array.
      *
-     * @param array $array An array.
+     * @param array|\MongoDB\BSON\BSONDocument|\MongoDB\BSON\BSONArray $array An array.
      *
      * @return \{{ class }} The document (fluent interface).
      */
-    public function fromArray(array $array)
+    public function fromArray($array)
     {
+        if($array instanceof \MongoDB\BSON\BSONDocument || $array instanceof \MongoDB\BSON\BSONArray){
+            $array = $array->getArrayCopy();
+        }
+
 {% if not config_class.isEmbedded %}
         $this->queryFields = array();
 {% endif %}

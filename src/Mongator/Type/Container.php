@@ -27,6 +27,8 @@ class Container
         'float'          => 'Mongator\Type\FloatType',
         'integer'        => 'Mongator\Type\IntegerType',
         'raw'            => 'Mongator\Type\RawType',
+        'object'         => 'Mongator\Type\ObjectType',
+        'array'          => 'Mongator\Type\ArrayType',
         'referenceOne'  => 'Mongator\Type\ReferenceOneType',
         'referenceMany' => 'Mongator\Type\ReferenceManyType',
         'serialized'     => 'Mongator\Type\SerializedType',
