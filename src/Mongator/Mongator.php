@@ -14,6 +14,8 @@ namespace Mongator;
 use Mongator\Cache\AbstractCache;
 use Mongator\Document\Event;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
+use Zend\ServiceManager\ServiceManager;
 
 /**
  * Mongator.
@@ -34,23 +36,37 @@ class Mongator
     private $defaultConnectionName;
     private $repositories;
     private $dispatcher;
+	
+	/**
+	 * @var ServiceManager
+	 */
+    private $serviceManager;
 
     static $doTranslate=false;
-
-    /**
-     * Constructor.
-     *
-     * @param \Mongator\MetadataFactory $metadataFactory The metadata factory.
-     *
-     * @api
-     */
-    public function __construct(MetadataFactory $metadataFactory)
+	
+	/**
+	 * Constructor.
+	 *
+	 * @param ServiceManager $serviceManager
+	 * @internal param MetadataFactory $metadataFactory The metadata factory.
+	 *
+	 * @api
+	 */
+    public function __construct(ServiceManager $serviceManager)
     {
-        $this->metadataFactory = $metadataFactory;
+    	$this->serviceManager = $serviceManager;
         $this->unitOfWork = new UnitOfWork($this);
         $this->connections = array();
         $this->repositories = array();
     }
+	
+	/**
+	 * Set Metadata factory
+	 * @param MetadataFactory $metadataFactory
+	 */
+    public function setMetadataFactory(MetadataFactory $metadataFactory){
+    	$this->metadataFactory = $metadataFactory;
+	}
 
     /**
      * Returns the metadata factory.
@@ -330,8 +346,9 @@ class Mongator
             if (!class_exists($repositoryClass)) {
                 throw new \RuntimeException(sprintf('The class "%s" does not exists.', $repositoryClass));
             }
-
-            $this->repositories[$documentClass] = new $repositoryClass($this);
+			
+            $factory = new ReflectionBasedAbstractFactory();
+			$this->repositories[$documentClass] = $factory($this->serviceManager, $repositoryClass);
         }
 
         return $this->repositories[$documentClass];

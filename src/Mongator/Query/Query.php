@@ -589,7 +589,8 @@ abstract class Query implements \Countable, \IteratorAggregate
      */
     public function createCursor()
     {
-        $cursor = $this->repository->getCollection()->find($this->criteria, $this->fields);
+    	
+        $cursor = $this->repository->getCollection()->find($this->criteria, $this->generateOptionsForFind());
 
         $result = new Result($cursor);
 
@@ -677,6 +678,20 @@ abstract class Query implements \Countable, \IteratorAggregate
         if ( !$includeHash ) unset($keys['vars']['hash']);
         return md5(serialize($keys));
     }
+	
+	/**
+	 * Generate options for collection find query
+	 * @return array
+	 */
+    protected function generateOptionsForFind(){
+		$options = [];
+		if($this->fields) $options['projections'] = $this->fields;
+		if($this->limit) $options['limit'] = $this->limit;
+		if($this->skip) $options['skip'] = $this->skip;
+		if($this->sort) $options['sort'] = $this->sort;
+		
+		return $options;
+	}
 
     protected function valueToMongoId($value)
     {

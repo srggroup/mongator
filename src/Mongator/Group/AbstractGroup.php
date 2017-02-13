@@ -266,7 +266,7 @@ abstract class AbstractGroup implements \Countable, \IteratorAggregate
      *
      * @api
      */
-    protected function doInitializeSaved(array $data)
+    protected function doInitializeSaved($data)
     {
         return $data;
     }

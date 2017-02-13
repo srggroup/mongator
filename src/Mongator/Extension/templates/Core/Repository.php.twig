@@ -5,9 +5,13 @@
 {% endif %}
 
     /**
+     * @param \Mongator\Mongator $mongator
+     * @param \Zend\ServiceManager\ServiceManager $serviceManager DI for Zend service compatibility
+     *
      * {@inheritdoc}
+     *
      */
-    public function __construct(\Mongator\Mongator $mongator)
+    public function __construct(\Mongator\Mongator $mongator, \Zend\ServiceManager\ServiceManager $serviceManager)
     {
         $this->documentClass = '{{ class }}';
         $this->isFile = {{ config_class.isFile ? 'true' : 'false' }};
@@ -16,7 +20,7 @@
 {% endif %}
         $this->collectionName = '{{ config_class.collection }}';
 
-        parent::__construct($mongator);
+        parent::__construct($mongator, $serviceManager);
     }
 
     /**
