@@ -12,6 +12,7 @@
 namespace Mongator\Document;
 
 use Mongator\Archive;
+use SRG\Odm\MongatorRepository;
 
 /**
  * The base class for documents.
@@ -29,7 +30,7 @@ abstract class Document extends AbstractDocument
     /**
      * Returns the repository.
      *
-     * @return \Mongator\Repository The repository.
+     * @return MongatorRepository The repository.
      *
      * @api
      */

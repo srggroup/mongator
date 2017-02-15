@@ -13,6 +13,7 @@ namespace Mongator;
 
 use Mongator\Cache\AbstractCache;
 use Mongator\Document\Event;
+use SRG\Odm\MongatorRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Zend\ServiceManager\ServiceManager;
@@ -328,7 +329,7 @@ class Mongator
      *
      * @param string $documentClass The document class.
      *
-     * @return \Mongator\Repository The repository.
+     * @return MongatorRepository The repository.
      *
      * @throws \InvalidArgumentException If the document class is not a valid document class.
      * @throws \RuntimeException         If the repository class build does not exist.
@@ -454,4 +455,5 @@ class Mongator
 
         $this->dispatcher->dispatch($name, $event);
     }
+	
 }

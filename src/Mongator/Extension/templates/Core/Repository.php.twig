@@ -11,17 +11,15 @@
      * {@inheritdoc}
      *
      */
-    public function __construct(\Mongator\Mongator $mongator, \Zend\ServiceManager\ServiceManager $serviceManager)
-    {
+    public function init(){
         $this->documentClass = '{{ class }}';
         $this->isFile = {{ config_class.isFile ? 'true' : 'false' }};
 {% if config_class.connection %}
         $this->connectionName = '{{ config_class.connection }}';
 {% endif %}
         $this->collectionName = '{{ config_class.collection }}';
-
-        parent::__construct($mongator, $serviceManager);
     }
+
 
     /**
      * {@inheritdoc}
