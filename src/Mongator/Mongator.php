@@ -15,6 +15,7 @@ use Mongator\Cache\AbstractCache;
 use Mongator\Document\Event;
 use SRG\Odm\MongatorRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Zend\EventManager\SharedEventManager;
 use Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Zend\ServiceManager\ServiceManager;
 
@@ -43,6 +44,11 @@ class Mongator
 	 */
     private $serviceManager;
 
+	/**
+	 * @var SharedEventManager
+	 */
+    private $sharedEventManager;
+
     static $doTranslate=false;
 	
 	/**
@@ -53,9 +59,10 @@ class Mongator
 	 *
 	 * @api
 	 */
-    public function __construct(ServiceManager $serviceManager)
+    public function __construct(ServiceManager $serviceManager, SharedEventManager $sharedEventManager)
     {
     	$this->serviceManager = $serviceManager;
+    	$this->sharedEventManager = $sharedEventManager;
         $this->unitOfWork = new UnitOfWork($this);
         $this->connections = array();
         $this->repositories = array();
@@ -80,6 +87,14 @@ class Mongator
     {
         return $this->metadataFactory;
     }
+
+	/**
+	 * Get shared event manager
+	 * @return SharedEventManager
+	 */
+    public function getSharedEventManager(){
+    	return $this->sharedEventManager;
+	}
 
     /**
      * Returns the fields cache.
