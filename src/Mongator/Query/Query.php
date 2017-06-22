@@ -685,7 +685,7 @@ abstract class Query implements \Countable, \IteratorAggregate
 	 */
     protected function generateOptionsForFind(){
 		$options = [];
-		if($this->fields) $options['projections'] = $this->fields;
+		if($this->fields) $options['projection'] = $this->fields;
 		if($this->limit) $options['limit'] = $this->limit;
 		if($this->skip) $options['skip'] = $this->skip;
 		if($this->sort) $options['sort'] = $this->sort;
