@@ -188,6 +188,9 @@ abstract class AbstractDocument
                     if ($group->getRemove()) {
                         return true;
                     }
+                    if ($group->getClear()){
+                    	return true;
+					}
                 }
                 if ($group->isSavedInitialized()) {
                     if ($add) return true;

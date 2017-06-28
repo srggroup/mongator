@@ -136,6 +136,16 @@ abstract class AbstractGroup implements \Countable, \IteratorAggregate
     }
 
     /**
+     * Returns the clear property
+     *
+     * @api
+     */
+    public function getClear()
+    {
+        return $this->getArchive()->getOrDefault('clear', false);
+    }
+
+    /**
      * Clears the remove queue of the group.
      *
      * @api
