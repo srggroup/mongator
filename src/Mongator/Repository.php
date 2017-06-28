@@ -10,6 +10,7 @@
  */
 
 namespace Mongator;
+use MongoDB\Driver\Cursor;
 
 /**
  * The base class for repositories.
@@ -449,12 +450,17 @@ abstract class Repository
 
     private function command($command, $options)
     {
+		/**
+		 * @var $result Cursor
+		 */
         $result = $this->getConnection()->getMongoDB()->command($command, $options);
 
-        if (!isset($result['ok']) || !$result['ok']) {
-            throw new \RuntimeException($result['errmsg']);
-        }
-
+        $result = $result->toArray()[0];
+	
+		if (!isset($result['ok']) || !$result['ok']) {
+			throw new \RuntimeException($result['errmsg']);
+		}
+		
         return $result;
     }
 }
