@@ -44,5 +44,10 @@
         "psr-0": {
             "Mongator\\": "src/"
         }
+    },
+    "extra": {    
+        "branch-alias": {
+            "dev-master": "2.x-dev"
+        }
     }
 }
