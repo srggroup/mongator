@@ -579,7 +579,7 @@ abstract class Query implements \Countable, \IteratorAggregate
     public function count()
     {
     	$collection = $this->getRepository()->getCollection();
-    	return $collection->count($this->criteria);
+    	return $collection->countDocuments($this->criteria);
     }
 
     /**
