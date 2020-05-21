@@ -15,9 +15,9 @@ use Mongator\Cache\AbstractCache;
 use Mongator\Document\Event;
 use SRG\Odm\MongatorRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Zend\EventManager\SharedEventManager;
-use Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
-use Zend\ServiceManager\ServiceManager;
+use Laminas\EventManager\SharedEventManager;
+use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
+use Laminas\ServiceManager\ServiceManager;
 
 /**
  * Mongator.
