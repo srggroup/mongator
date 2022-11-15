@@ -12,7 +12,7 @@
 
 namespace Mongator\Document;
 
-use Symfony\Component\EventDispatcher\Event as BaseEvent;
+use Symfony\Component\EventDispatcher\GenericEvent as BaseEvent;
 
 /**
  * The Event class for documents.
@@ -21,18 +21,18 @@ use Symfony\Component\EventDispatcher\Event as BaseEvent;
  * @author Eduardo Gulias <me@egulias.com>
  *
  * @api
- */ 
-class Event extends BaseEvent
-{
-    private $document;
-
-    public function __construct(AbstractDocument $document)
-    {
-        $this->document = $document;
-    }
-
-    public function getDocument()
-    {
-        return $this->document;
-    }
+ */
+class Event extends BaseEvent {
+	
+	private $document;
+	
+	
+	public function __construct(AbstractDocument $document){
+		$this->document = $document;
+	}
+	
+	
+	public function getDocument(){
+		return $this->document;
+	}
 }

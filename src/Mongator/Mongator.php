@@ -453,15 +453,16 @@ class Mongator
     {
         $this->dispatcher = $dispatcher;
     }
-
-    /**
-     * Dispatch a DocumentEvent to the dispatcher
-     *
-     * @param string $name
-     * @param Mongator\Document\Event $event
-     *
-     * @api
-     */
+	
+	
+	/**
+	 * Dispatch a DocumentEvent to the dispatcher
+	 *
+	 * @param string $name
+	 * @param Event  $event
+	 *
+	 * @api
+	 */
     public function dispatchEvent($name, Event $event)
     {
         if (!$this->dispatcher) {

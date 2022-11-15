@@ -26,14 +26,11 @@
         }
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^8.2",
         "mongator/mondator": "~2.0",
-        "symfony/event-dispatcher": "^2.8",
-        "mongodb/mongodb": "^1.4",
-        "laminas/laminas-servicemanager": "^3.1"
-    },
-    "require-dev": {
-        "athletic/athletic": "dev-master"
+        "symfony/event-dispatcher": "~6.1.0",
+        "mongodb/mongodb": "~1.13.0",
+        "laminas/laminas-servicemanager": "~3.19.0"
     },
     "suggest": {
         "ext-apc": "Allow caching on APC",
