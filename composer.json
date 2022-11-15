@@ -28,7 +28,7 @@
     "require": {
         "php": "^8.1",
         "mongator/mondator": "dev-dev-php8",
-        "symfony/event-dispatcher": "~6.1.0",
+        "symfony/event-dispatcher": "~5.4.9",
         "mongodb/mongodb": "~1.13.0",
         "laminas/laminas-servicemanager": "~3.19.0"
     },
