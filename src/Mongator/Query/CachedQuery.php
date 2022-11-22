@@ -50,7 +50,7 @@ abstract class CachedQuery extends Query
         return $result;
     }
 
-    public function count()
+    public function count(): int
     {
         $this->count = true;
 

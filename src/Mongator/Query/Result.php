@@ -61,7 +61,7 @@ class Result implements \Iterator, \Countable, \Serializable
      *
      * @api
      */
-    public function count()
+    public function count(): int
     {
         if ( !$this->count ) return $this->iterator->count();
 
@@ -79,7 +79,7 @@ class Result implements \Iterator, \Countable, \Serializable
      *
      * @api
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->iterator->current();
     }
@@ -91,7 +91,7 @@ class Result implements \Iterator, \Countable, \Serializable
      *
      * @api
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->iterator->key();
     }
@@ -101,9 +101,9 @@ class Result implements \Iterator, \Countable, \Serializable
      *
      * @api
      */
-    public function next()
+    public function next(): void
     {
-        return $this->iterator->next();
+        $this->iterator->next();
     }
 
     /**
@@ -111,9 +111,9 @@ class Result implements \Iterator, \Countable, \Serializable
      *
      * @api
      */
-    public function rewind()
+    public function rewind(): void
     {
-        return $this->iterator->rewind();
+        $this->iterator->rewind();
     }
 
     /**
@@ -123,7 +123,7 @@ class Result implements \Iterator, \Countable, \Serializable
      *
      * @api
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->iterator->valid();
     }
@@ -156,4 +156,22 @@ class Result implements \Iterator, \Countable, \Serializable
         $this->count = $array['count'];
         $this->iterator = new \ArrayIterator($array['data']);
     }
+	
+	
+	/**
+	 * @return array|string
+	 */
+	public function __serialize(): array{
+		return $this->serialize();
+	}
+	
+	
+	/**
+	 * @param array $data
+	 *
+	 * @return void
+	 */
+	public function __unserialize(array $data): void{
+		$this->unserialize($data);
+	}
 }

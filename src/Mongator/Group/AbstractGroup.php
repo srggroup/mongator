@@ -13,6 +13,7 @@ namespace Mongator\Group;
 
 use Mongator\Archive;
 use Mongator\Document\Document;
+use Traversable;
 
 /**
  * AbstractGroup.
@@ -219,7 +220,7 @@ abstract class AbstractGroup implements \Countable, \IteratorAggregate
      *
      * @api
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new \ArrayIterator($this->all());
     }
@@ -286,7 +287,7 @@ abstract class AbstractGroup implements \Countable, \IteratorAggregate
      *
      * @api
      */
-    public function count()
+    public function count(): int
     {
         return count($this->all());
     }

@@ -88,7 +88,7 @@ class PolymorphicReferenceGroup extends PolymorphicGroup
     /**
      * {@inheritdoc}
      */
-    protected function doInitializeSaved(array $data)
+    protected function doInitializeSaved($data)
     {
         $parent = $this->getParent();
         $mongator = $parent->getMongator();

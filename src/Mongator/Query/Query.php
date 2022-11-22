@@ -14,6 +14,7 @@ namespace Mongator\Query;
 use Mongator\Repository;
 use MongoDB\BSON\ObjectID;
 use MongoDB\Driver\Cursor;
+use Traversable;
 
 /**
  * Query.
@@ -52,7 +53,7 @@ abstract class Query implements \Countable, \IteratorAggregate
 
         $hash = $this->repository->getDocumentClass();
 
-        if (version_compare(PHP_VERSION, '5.3.6', '=>')) {
+        if (version_compare(PHP_VERSION, '5.3.6', '>=')) {
             $debugBacktrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         } else {
             $debugBacktrace = debug_backtrace();
@@ -548,7 +549,7 @@ abstract class Query implements \Countable, \IteratorAggregate
      *
      * @api
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new \ArrayIterator($this->all());
     }
@@ -576,7 +577,7 @@ abstract class Query implements \Countable, \IteratorAggregate
      *
      * @api
      */
-    public function count()
+    public function count(): int
     {
     	$collection = $this->getRepository()->getCollection();
     	return $collection->countDocuments($this->criteria);

@@ -68,7 +68,7 @@ class RedisCache extends AbstractCache
     {
         $key = $this->getRedisKey($key);
 
-        return (boolean) $this->redis->delete($key);
+        return (boolean) $this->redis->del($key);
     }
 
     /**
@@ -78,7 +78,7 @@ class RedisCache extends AbstractCache
     {
         $pattern = $this->getRedisKey('*');
         foreach ($this->redis->keys($pattern) as $key) {
-            $this->redis->delete($key);
+            $this->redis->del($key);
         }
     }
 

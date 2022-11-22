@@ -18,8 +18,14 @@ abstract class LocalChunk implements ChunkInterface
     protected $filterFunc = null;
     protected $dbSortFields;
     protected $cache = [];
-
-    public function set($sortStrategy, $page, $pageSize)
+	
+	/**
+	 * @var int[]|mixed
+	 */
+	private mixed $sortStrategy;
+	
+	
+	public function set($sortStrategy, $page, $pageSize)
     {
         $this->setSortStrategy($sortStrategy);
         $this->setPagination($page, $pageSize);
