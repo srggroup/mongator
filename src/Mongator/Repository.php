@@ -439,13 +439,10 @@ abstract class Repository
      */
     public function aggregate(array $pipeline, array $options = array())
     {
-        $command = array(
-            'aggregate' => $this->getCollectionName(),
-            'pipeline' => $pipeline
-        );
-        $result = $this->command($command, $options);
+		/** @var Cursor $result */
+		$result = $this->getConnection()->getMongoDB()->selectCollection($this->getCollectionName())->aggregate($pipeline, $options);
 
-        return $result['result'];
+        return $result->toArray();
     }
 
     private function command($command, $options)
