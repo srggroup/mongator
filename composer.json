@@ -30,11 +30,10 @@
 	],
 	"require": {
 		"php": "^8.4",
-		"mongator/mondator": "^3.0",
+		"mongator/mondator": "dev-dev-updates",
 		"symfony/event-dispatcher": "~7.3.3",
 		"mongodb/mongodb": "~1.21.2",
 		"laminas/laminas-servicemanager": "~3.23.1",
-		"ext-mongo": "*",
 		"ext-mongodb": "*"
 	},
 	"require-dev": {
