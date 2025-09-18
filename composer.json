@@ -32,7 +32,7 @@
 		"php": "^8.3 | ^8.4",
 		"mongator/mondator": "dev-dev-updates",
 		"symfony/event-dispatcher": "~7.3.3",
-		"mongodb/mongodb": "~1.21.2",
+		"mongodb/mongodb": "^2.1.1",
 		"laminas/laminas-servicemanager": "~3.23.1",
 		"ext-mongodb": "*"
 	},
