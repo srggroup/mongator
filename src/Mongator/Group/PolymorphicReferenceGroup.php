@@ -11,108 +11,90 @@
 
 namespace Mongator\Group;
 
-use Mongator\Archive;
+use Mongator\Document\AbstractDocument;
 
 /**
  * PolymorphicReferenceGroup.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-class PolymorphicReferenceGroup extends PolymorphicGroup
-{
-    /**
-     * Constructor.
-     *
-     * @param string                              $discriminatorField The discriminator field.
-     * @param \Mongator\Document\AbstractDocument $parent             The parent document.
-     * @param string                              $field              The reference field.
-     * @param array|Boolean                       $discriminatorMap   The discriminator map if exists, otherwise false.
-     *
-     * @api
-     */
-    public function __construct($discriminatorField, $parent, $field, $discriminatorMap = false)
-    {
-        parent::__construct($discriminatorField);
+class PolymorphicReferenceGroup extends PolymorphicGroup {
 
-        $this->getArchive()->set('parent', $parent);
-        $this->getArchive()->set('field', $field);
-        $this->getArchive()->set('discriminatorMap', $discriminatorMap);
-    }
 
-    /**
-     * Returns the parent document.
-     *
-     * @return \Mongator\Document\AbstractDocument The parent document.
-     *
-     * @api
-     */
-    public function getParent()
-    {
-        return $this->getArchive()->get('parent');
-    }
+	/**
+	 * @param string                              $discriminatorField The discriminator field.
+	 * @param AbstractDocument $parent             The parent document.
+	 * @param string                              $field              The reference field.
+	 * @param array|bool                       $discriminatorMap   The discriminator map if exists, otherwise false.
+	 */
+	public function __construct($discriminatorField, $parent, $field, $discriminatorMap = false) {
+		parent::__construct($discriminatorField);
 
-    /**
-     * Returns the reference field.
-     *
-     * @return string The reference field.
-     *
-     * @api
-     */
-    public function getField()
-    {
-        return $this->getArchive()->get('field');
-    }
+		$this->getArchive()->set('parent', $parent);
+		$this->getArchive()->set('field', $field);
+		$this->getArchive()->set('discriminatorMap', $discriminatorMap);
+	}
 
-    /**
-     * Returns the discriminator map.
-     *
-     * @return array|Boolean The discriminator map.
-     *
-     * @api
-     */
-    public function getDiscriminatorMap()
-    {
-        return $this->getArchive()->get( 'discriminatorMap');
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function doInitializeSavedData()
-    {
-        return (array) $this->getParent()->get($this->getField());
-    }
+	/**
+	 * Returns the parent document.
+	 *
+	 * @return AbstractDocument The parent document.
+	 */
+	public function getParent() {
+		return $this->getArchive()->get('parent');
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function doInitializeSaved($data)
-    {
-        $parent = $this->getParent();
-        $mongator = $parent->getMongator();
 
-        $discriminatorField = $this->getDiscriminatorField();
-        $discriminatorMap = $this->getDiscriminatorMap();
+	/**
+	 * Returns the reference field.
+	 *
+	 * @return string The reference field.
+	 */
+	public function getField() {
+		return $this->getArchive()->get('field');
+	}
 
-        $ids = array();
-        foreach ($data as $datum) {
-            if ($discriminatorMap) {
-                $documentClass = $discriminatorMap[$datum[$discriminatorField]];
-            } else {
-                $documentClass = $datum[$discriminatorField];
-            }
-            $ids[$documentClass][] = $datum['id'];
-        }
 
-        $documents = array();
-        foreach ($ids as $documentClass => $documentClassIds) {
-            foreach ((array) $mongator->getRepository($documentClass)->findById($documentClassIds) as $document) {
-                $documents[] = $document;
-            }
-        }
+	/**
+	 * Returns the discriminator map.
+	 *
+	 * @return array|bool The discriminator map.
+	 */
+	public function getDiscriminatorMap() {
+		return $this->getArchive()->get('discriminatorMap');
+	}
 
-        return $documents;
-    }
+
+	protected function doInitializeSavedData() {
+		return (array) $this->getParent()->get($this->getField());
+	}
+
+
+	protected function doInitializeSaved($data) {
+		$parent = $this->getParent();
+		$mongator = $parent->getMongator();
+
+		$discriminatorField = $this->getDiscriminatorField();
+		$discriminatorMap = $this->getDiscriminatorMap();
+
+		$ids = [];
+		foreach ($data as $datum) {
+			if ($discriminatorMap) {
+				$documentClass = $discriminatorMap[$datum[$discriminatorField]];
+			} else {
+				$documentClass = $datum[$discriminatorField];
+			}
+			$ids[$documentClass][] = $datum['id'];
+		}
+
+		$documents = [];
+		foreach ($ids as $documentClass => $documentClassIds) {
+			foreach ((array) $mongator->getRepository($documentClass)->findById($documentClassIds) as $document) {
+				$documents[] = $document;
+			}
+		}
+
+		return $documents;
+	}
+
+
 }

@@ -2,62 +2,62 @@
 
 namespace Mongator\Query;
 
-class Chunk implements ChunkInterface
-{
-    public $sortFields;
-    public $page;
-    public $pageSize;
+class Chunk implements ChunkInterface {
 
-    public function __construct($sortFields = null, $page = null, $pageSize = null)
-    {
-        $this->set($sortFields, $page, $pageSize);
-    }
 
-    public function set($sortFields, $page, $pageSize)
-    {
-        if (($sortFields !== null) && !is_array($sortFields))
-            $sortFields = array($sortFields => 1);
+	public $sortFields;
 
-        $this->sortFields = $sortFields;
-        $this->page = $page;
-        $this->pageSize = $pageSize;
+	public $page;
 
-        return $this;
-    }
+	public $pageSize;
 
-    public function getResult(Query $query)
-    {
-        $this->applyTo($query);
 
-        $result = $this->createChunkResult($query->all());
-        $result->setTotal(function() use ($query) {
-            return $query->count();
-        });
+	public function __construct($sortFields = null, $page = null, $pageSize = null) {
+		$this->set($sortFields, $page, $pageSize);
+	}
 
-        return $result;
-    }
 
-    private function applyTo(Query $query)
-    {
-        if ($this->sortFields !== null)
-            $query->sort($this->sortFields);
+	public function set($sortFields, $page, $pageSize) {
+		if (($sortFields !== null) && !is_array($sortFields)) {
+			$sortFields = [$sortFields => 1];
+		}
 
-        if ($this->page !== null)
-            $query
-                ->skip($this->pageSize * $this->page)
-                ->limit($this->pageSize);
+		$this->sortFields = $sortFields;
+		$this->page = $page;
+		$this->pageSize = $pageSize;
 
-        return $query;
-    }
+		return $this;
+	}
 
-    protected function createChunkResult($data)
-    {
-        return new ChunkResult($data);
-    }
 
-    private function applySort($query)
-    {
-        if ($this->sortFields === null) return $query;
-        return $query->sort($this->sortFields);
-    }
+	public function getResult(Query $query) {
+		$this->applyTo($query);
+
+		$result = $this->createChunkResult($query->all());
+		$result->setTotal(static function () use ($query) {
+			return $query->count();
+		});
+
+		return $result;
+	}
+
+
+	private function applyTo(Query $query) {
+		if ($this->sortFields !== null) {
+			$query->sort($this->sortFields);
+		}
+
+		if ($this->page !== null) {
+			$query
+				->skip($this->pageSize * $this->page)
+				->limit($this->pageSize);
+		}
+	}
+
+
+	protected function createChunkResult($data) {
+		return new ChunkResult($data);
+	}
+
+
 }

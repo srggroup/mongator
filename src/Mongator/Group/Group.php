@@ -11,38 +11,27 @@
 
 namespace Mongator\Group;
 
-use Mongator\Archive;
-use Mongator\Document\Document;
-
 /**
  * Group.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-abstract class Group extends AbstractGroup
-{
-    /**
-     * Constructor.
-     *
-     * @param string $documentClass The document class.
-     *
-     * @api
-     */
-    public function __construct($documentClass)
-    {
-        parent::__construct();
-        $this->getArchive()->set('document_class', $documentClass);
-    }
+abstract class Group extends AbstractGroup {
 
-    /**
-     * Returns the document class.
-     *
-     * @api
-     */
-    public function getDocumentClass()
-    {
-        return $this->getArchive()->get('document_class');
-    }
+
+	/**
+	 * @param string $documentClass The document class.
+	 */
+	public function __construct($documentClass) {
+		parent::__construct();
+		$this->getArchive()->set('document_class', $documentClass);
+	}
+
+
+	/**
+	 * Returns the document class.
+	 */
+	public function getDocumentClass() {
+		return $this->getArchive()->get('document_class');
+	}
+
+
 }

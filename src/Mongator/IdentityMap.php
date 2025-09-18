@@ -15,78 +15,51 @@ use Mongator\Document\Document;
 
 /**
  * The identity map class.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-class IdentityMap implements IdentityMapInterface
-{
-    private $documents;
+class IdentityMap implements IdentityMapInterface {
 
-    /**
-     * Constructor.
-     *
-     * @api
-     */
-    public function __construct()
-    {
-        $this->documents = array();
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function set($id, Document $document)
-    {
-        $this->documents[(string) $id] = $document;
-    }
+	private $documents;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function has($id)
-    {
-        return isset($this->documents[(string) $id]);
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function get($id)
-    {
-        return $this->documents[(string) $id];
-    }
+	public function __construct() {
+		$this->documents = [];
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function all()
-    {
-        return $this->documents;
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function &allByReference()
-    {
-        return $this->documents;
-    }
+	public function set($id, Document $document) {
+		$this->documents[(string) $id] = $document;
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function remove($id)
-    {
-        unset($this->documents[(string) $id]);
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function clear()
-    {
-        $this->documents = array();
-    }
+	public function has($id) {
+		return isset($this->documents[(string) $id]);
+	}
+
+
+	public function get($id) {
+		return $this->documents[(string) $id];
+	}
+
+
+	public function all() {
+		return $this->documents;
+	}
+
+
+	public function &allByReference() {
+		return $this->documents;
+	}
+
+
+	public function remove($id) {
+		unset($this->documents[(string) $id]);
+	}
+
+
+	public function clear() {
+		$this->documents = [];
+	}
+
+
 }

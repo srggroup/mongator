@@ -68,7 +68,10 @@
                 foreach ($add as $document) {
 {% if reference.discriminatorMap %}
                     if (false === $discriminatorValue = array_search(get_class($document), $discriminatorMapValues)) {
-                        throw new \RuntimeException(sprintf('The class "%s" is not a possible reference in the reference "{{ name }}" of the class "{{ class }}".', get_class($document)));
+                        throw new \RuntimeException(sprintf(
+							'The class "%s" is not a possible reference in the reference "{{ name }}" of the class "{{ class }}".',
+							get_class($document)
+						));
                     }
 {% else %}
                     $discriminatorValue = get_class($document);
@@ -81,7 +84,10 @@
                 foreach ($remove as $document) {
 {% if reference.discriminatorMap %}
                     if (false === $discriminatorValue = array_search(get_class($document), $discriminatorMapValues)) {
-                        throw new \RuntimeException(sprintf('The class "%s" is not a possible reference in the reference "{{ name }}" of the class "{{ class }}".', get_class($value)));
+                        throw new \RuntimeException(sprintf(
+							'The class "%s" is not a possible reference in the reference "{{ name }}" of the class "{{ class }}".',
+							get_class($value)
+						));
                     }
 {% else %}
                     $discriminatorValue = get_class($document);

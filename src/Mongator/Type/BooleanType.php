@@ -13,42 +13,28 @@ namespace Mongator\Type;
 
 /**
  * BooleanType.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-class BooleanType extends Type
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongo($value)
-    {
-        return (bool) $value;
-    }
+class BooleanType extends Type {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHP($value)
-    {
-        return (bool) $value;
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongoInString()
-    {
-        return '%to% = (bool) %from%;';
-    }
+	public function toMongo($value) {
+		return (bool) $value;
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHPInString()
-    {
-        return '%to% = (bool) %from%;';
-    }
+
+	public function toPHP($value) {
+		return (bool) $value;
+	}
+
+
+	public function toMongoInString() {
+		return '%to% = (bool) %from%;';
+	}
+
+
+	public function toPHPInString() {
+		return '%to% = (bool) %from%;';
+	}
+
+
 }

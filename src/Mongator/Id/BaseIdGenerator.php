@@ -13,31 +13,31 @@ namespace Mongator\Id;
 
 /**
  * BaseIdGenerator.
- *
- * @author Pablo Díez <pablodip@gmail.com>
  */
-abstract class BaseIdGenerator
-{
-    /**
-     * Returns the code to generate the id.
-     *
-     * @param array $options An array of options.
-     *
-     * @return string The code to generate.
-     */
-    abstract public function getCode(array $options);
+abstract class BaseIdGenerator {
 
-    /**
-     * Returns the code to convert an id to the mongo value.
-     */
-    abstract public function getToMongoCode();
 
-    /**
-     * Returns the code to convert a mongo id to the id used in Mongator. Nothing done by default
-     *
-     */
-    public function getToPHPCode()
-    {
-        return '';
-    }
+	/**
+	 * Returns the code to generate the id.
+	 *
+	 * @param array $options An array of options.
+	 * @return string The code to generate.
+	 */
+	abstract public function getCode(array $options);
+
+
+	/**
+	 * Returns the code to convert an id to the mongo value.
+	 */
+	abstract public function getToMongoCode();
+
+
+	/**
+	 * Returns the code to convert a mongo id to the id used in Mongator. Nothing done by default
+	 */
+	public function getToPHPCode() {
+		return '';
+	}
+
+
 }

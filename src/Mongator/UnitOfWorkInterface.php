@@ -11,44 +11,40 @@
 
 namespace Mongator;
 
+use Mongator\Document\Document;
+
 /**
  * UnitOfWorkInterface.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-interface UnitOfWorkInterface
-{
-    /**
-     * Persist a document.
-     *
-     * @param \Mongator\Document\Document|array $documents A document or an array of documents.
-     *
-     * @api
-     */
-    public function persist($documents);
+interface UnitOfWorkInterface {
 
-    /**
-     * Remove a document.
-     *
-     * @param \Mongator\Document\Document|array $documents A document or an array of documents.
-     *
-     * @api
-     */
-    public function remove($documents);
 
-    /**
-     * Commit pending persist and remove operations.
-     *
-     * @api
-     */
-    public function commit();
+	/**
+	 * Persist a document.
+	 *
+	 * @param Document|array $documents A document or an array of documents.
+	 */
+	public function persist($documents);
 
-    /**
-     * Clear the pending operations
-     *
-     * @api
-     */
-    public function clear();
+
+	/**
+	 * Remove a document.
+	 *
+	 * @param Document|array $documents A document or an array of documents.
+	 */
+	public function remove($documents);
+
+
+	/**
+	 * Commit pending persist and remove operations.
+	 */
+	public function commit();
+
+
+	/**
+	 * Clear the pending operations
+	 */
+	public function clear();
+
+
 }

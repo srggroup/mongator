@@ -11,34 +11,31 @@
 
 namespace Mongator\Id;
 
+use InvalidArgumentException;
+
 /**
  * Generates a sequence.
- *
- * @author Pablo Díez <pablodip@gmail.com>
  */
-class SequenceIdGenerator extends BaseIdGenerator
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function getCode(array $options)
-    {
-        $increment = isset($options['increment']) ? $options['increment'] : 1;
-        $start = isset($options['start']) ? $options['start'] : null;
+class SequenceIdGenerator extends BaseIdGenerator {
 
-        // increment
-        if (!is_int($increment) || 0 === $increment) {
-            throw new \InvalidArgumentException('The option "increment" must be an integer distinct of 0.');
-        }
 
-        // start
-        if (null === $start) {
-            $start = $increment > 0 ? 1 : -1;
-        } elseif (!is_int($start) || 0 === $start) {
-            throw new \InvalidArgumentException('The option "start" must be an integer distinct of 0.');
-        }
+	public function getCode(array $options) {
+		$increment = $options['increment'] ?? 1;
+		$start = $options['start'] ?? null;
 
-        return <<<EOF
+		// increment
+		if (!is_int($increment) || $increment === 0) {
+			throw new InvalidArgumentException('The option "increment" must be an integer distinct of 0.');
+		}
+
+		// start
+		if ($start === null) {
+			$start = $increment > 0 ? 1 : -1;
+		} elseif (!is_int($start) || $start === 0) {
+			throw new InvalidArgumentException('The option "start" must be an integer distinct of 0.');
+		}
+
+		return <<<EOF
 \$serverInfo = \$repository->getConnection()->getMongo()->selectDB('admin')->command(array('buildinfo' => true));
 \$mongoVersion = \$serverInfo['version'];
 
@@ -64,15 +61,14 @@ if (
     %id% = $start;
 }
 EOF;
-    }
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getToMongoCode()
-    {
-        return <<<EOF
+
+	public function getToMongoCode() {
+		return <<<EOF
 %id% = (int) %id%;
 EOF;
-    }
+	}
+
+
 }

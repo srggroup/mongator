@@ -11,40 +11,30 @@
 
 namespace Mongator\Group;
 
-use Mongator\Archive;
-
 /**
  * PolymorphicGroup.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-abstract class PolymorphicGroup extends AbstractGroup
-{
-    /**
-     * Constructor.
-     *
-     * @param string $discriminatorField The discriminator field.
-     *
-     * @api
-     */
-    public function __construct($discriminatorField)
-    {
-        parent::__construct();
+abstract class PolymorphicGroup extends AbstractGroup {
 
-        $this->getArchive()->set('discriminatorField', $discriminatorField);
-    }
 
-    /**
-     * Returns the discriminator field.
-     *
-     * @return string The discriminator field.
-     *
-     * @api
-     */
-    public function getDiscriminatorField()
-    {
-        return $this->getArchive()->get('discriminatorField');
-    }
+	/**
+	 * @param string $discriminatorField The discriminator field.
+	 */
+	public function __construct($discriminatorField) {
+		parent::__construct();
+
+		$this->getArchive()->set('discriminatorField', $discriminatorField);
+	}
+
+
+	/**
+	 * Returns the discriminator field.
+	 *
+	 * @return string The discriminator field.
+	 */
+	public function getDiscriminatorField() {
+		return $this->getArchive()->get('discriminatorField');
+	}
+
+
 }

@@ -10,6 +10,7 @@
  */
 
 namespace Mongator\Type;
+
 use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
 
@@ -17,31 +18,30 @@ use MongoDB\Model\BSONDocument;
  * ArrayObjectType.
  *
  * Parent class for array and object types
- *
- * @author Adam.Balint <adam.balint@srg.hu>
- *
- * @api
  */
-abstract class ArrayObjectType extends Type
-{
-	
+abstract class ArrayObjectType extends Type {
+
+
 	/**
 	 * Convert BSONDocument and BSONArray to array recursively
 	 *
 	 * @param mixed $value
 	 * @return mixed
 	 */
-	static function BSONToArrayRecursive($value){
-		if($value instanceof BSONDocument || $value instanceof BSONArray) {
+	public static function BSONToArrayRecursive($value) {
+		if ($value instanceof BSONDocument || $value instanceof BSONArray) {
 			$value = $value->getArrayCopy();
 		}
-		if(is_array($value)){
-			foreach($value as $key => $item){
-				if(is_array($item) || $item instanceof BSONDocument || $item instanceof BSONArray){
+		if (is_array($value)) {
+			foreach ($value as $key => $item) {
+				if (is_array($item) || $item instanceof BSONDocument || $item instanceof BSONArray) {
 					$value[$key] = self::BSONToArrayRecursive($item);
 				}
 			}
 		}
+
 		return $value;
 	}
+
+
 }

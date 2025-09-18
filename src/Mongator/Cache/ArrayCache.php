@@ -13,48 +13,35 @@ namespace Mongator\Cache;
 
 /**
  * AbstractCache.
- *
- * @author Máximo Cuadros <maximo@yunait.com>
  */
-class ArrayCache extends AbstractCache
-{
-    private $data = array();
+class ArrayCache extends AbstractCache {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function set($key, $value, $ttl = 0)
-    {
-        $content = $this->pack($key, $value, $ttl);
 
-        $this->data[$key] = $this->pack($key, $value, $ttl);
-    }
+	private $data = [];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function remove($key)
-    {
-        unset($this->data[$key]);
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function info($key)
-    {
-        if ( !isset($this->data[$key]) ) {
-            return null;
-        }
+	public function set($key, $value, $ttl = 0) {
+		$this->data[$key] = $this->pack($key, $value, $ttl);
+	}
 
-        return $this->data[$key];
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function clear()
-    {
-        $this->data = array();
-    }
+	public function remove($key) {
+		unset($this->data[$key]);
+	}
+
+
+	public function info($key) {
+		if (!isset($this->data[$key])) {
+			return null;
+		}
+
+		return $this->data[$key];
+	}
+
+
+	public function clear() {
+		$this->data = [];
+	}
+
+
 }

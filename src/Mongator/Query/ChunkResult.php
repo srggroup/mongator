@@ -1,22 +1,33 @@
 <?php
+
 namespace Mongator\Query;
 
-class ChunkResult extends \ArrayObject
-{
-    private $total;
+use ArrayObject;
+use Closure;
 
-    public function setTotal($total)
-    {
-        $this->total = $total;
-    }
+class ChunkResult extends ArrayObject {
 
-    public function getData() { return $this->getArrayCopy(); }
-    public function getTotal()
-    {
-        if ($this->total instanceOf \Closure) {
-            $this->total = $this->total->__invoke();
-        }
 
-        return $this->total;
-    }
+	private $total;
+
+
+	public function setTotal($total) {
+		$this->total = $total;
+	}
+
+
+	public function getData() {
+		return $this->getArrayCopy();
+	}
+
+
+	public function getTotal() {
+		if ($this->total instanceof Closure) {
+			$this->total = $this->total->__invoke();
+		}
+
+		return $this->total;
+	}
+
+
 }

@@ -11,87 +11,74 @@
 
 namespace Mongator\Cache;
 
+use Redis;
+
 /**
  * AbstractCache.
- *
- * @author Máximo Cuadros <maximo@yunait.com>
  */
-class RedisCache extends AbstractCache
-{
-    private $redis;
-    private $keyPattern;
+class RedisCache extends AbstractCache {
 
-    /**
-     * Constructor.
-     *
-     * @param Redis  $redis      the redis instance
-     * @param string $keyPattern (optional) redis format key, printf format
-     */
-    public function __construct(\Redis $redis, $keyPattern = '{Mongator}{%s}')
-    {
-        $this->redis = $redis;
-        $this->keyPattern = $keyPattern;
-    }
 
-    private function getRedisKey($key)
-    {
-        return sprintf($this->keyPattern, $key);
-    }
+	private $redis;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function has($key)
-    {
-        $key = $this->getRedisKey($key);
 
-        return (boolean) $this->redis->exists($key);
-    }
+	/**
+	 * @param Redis $redis      the redis instance
+	 * @param string $keyPattern (optional) redis format key, printf format
+	 */
+	public function __construct(Redis $redis, private $keyPattern = '{Mongator}{%s}') {
+		$this->redis = $redis;
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function set($key, $value, $ttl = 0)
-    {
-        $content = $this->pack($key, $value, $ttl);
-        $key = $this->getRedisKey($key);
 
-        $string = serialize($content);
-        if ( (int) $ttl == 0 ) $this->redis->set($key, $string);
-        else $this->redis->setex($key, $ttl, $string);
-    }
+	public function has($key) {
+		$key = $this->getRedisKey($key);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function remove($key)
-    {
-        $key = $this->getRedisKey($key);
+		return (bool) $this->redis->exists($key);
+	}
 
-        return (boolean) $this->redis->del($key);
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function clear()
-    {
-        $pattern = $this->getRedisKey('*');
-        foreach ($this->redis->keys($pattern) as $key) {
-            $this->redis->del($key);
-        }
-    }
+	public function set($key, $value, $ttl = 0) {
+		$content = $this->pack($key, $value, $ttl);
+		$key = $this->getRedisKey($key);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function info($key)
-    {
-        $key = $this->getRedisKey($key);
-        if ( !$content = $this->redis->get($key) ) {
-            return false;
-        }
+		$string = serialize($content);
+		if ((int) $ttl === 0) {
+			$this->redis->set($key, $string);
+		} else {
+			$this->redis->setex($key, $ttl, $string);
+		}
+	}
 
-        return unserialize($content);
-    }
+
+	public function remove($key) {
+		$key = $this->getRedisKey($key);
+
+		return (bool) $this->redis->del($key);
+	}
+
+
+	public function clear() {
+		$pattern = $this->getRedisKey('*');
+		foreach ($this->redis->keys($pattern) as $key) {
+			$this->redis->del($key);
+		}
+	}
+
+
+	public function info($key) {
+		$key = $this->getRedisKey($key);
+		if (!$content = $this->redis->get($key)) {
+			return false;
+		}
+
+		return unserialize($content);
+	}
+
+
+	private function getRedisKey($key) {
+		return sprintf($this->keyPattern, $key);
+	}
+
+
 }

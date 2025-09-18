@@ -13,42 +13,28 @@ namespace Mongator\Type;
 
 /**
  * RawType.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-class RawType extends Type
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongo($value)
-    {
-        return $value;
-    }
+class RawType extends Type {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHP($value)
-    {
-        return $value;
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongoInString()
-    {
-        return '%to% = %from%;';
-    }
+	public function toMongo($value) {
+		return $value;
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHPInString()
-    {
-        return '%to% = %from%;';
-    }
+
+	public function toPHP($value) {
+		return $value;
+	}
+
+
+	public function toMongoInString() {
+		return '%to% = %from%;';
+	}
+
+
+	public function toPHPInString() {
+		return '%to% = %from%;';
+	}
+
+
 }

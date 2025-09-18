@@ -19,91 +19,82 @@ use Twig\TwigFunction;
 
 /**
  * The "Mongator" extension for twig (used in the Core Mondator extension).
- *
- * @author Pablo Díez <pablodip@gmail.com>
  */
-class Mongator extends AbstractExtension
-{
-    public function getFilters()
-    {
-        return array(
-            'ucfirst'    => new TwigFilter('ucfirst', 'ucfirst'),
-            'var_export' => new TwigFilter('var_export', function($string) {
-                return var_export($string, true);
-            })
-        );
-    }
+class Mongator extends AbstractExtension {
 
-    public function getFunctions()
-    {
-        return array(
-            'Mongator_id_generator' =>
-                new TwigFunction('Mongator_id_generator', array($this, 'MongatorIdGenerator')),
-            'Mongator_id_generator_to_mongo' =>
-                new TwigFunction('Mongator_id_generator_to_mongo', array($this, 'MongatorIdGeneratorToMongo')),
-            'Mongator_id_generator_to_php' =>
-                new TwigFunction('Mongator_id_generator_to_php', array($this, 'MongatorIdGeneratorToPHP')),
-            'Mongator_type_to_mongo' =>
-                new TwigFunction('Mongator_type_to_mongo', array($this, 'MongatorTypeToMongo')),
-            'Mongator_type_to_php' =>
-                new TwigFunction('Mongator_type_to_php', array($this, 'MongatorTypeToPHP')),
-        );
-    }
 
-    public function MongatorIdGenerator($configClass, $id, $indent = 8)
-    {
-        $idGenerator = IdGeneratorContainer::get($configClass['idGenerator']['name']);
-        $code = $idGenerator->getCode($configClass['idGenerator']['options']);
-        $code = str_replace('%id%', $id, $code);
-        $code = static::indentCode($code, $indent);
+	public function getFilters() {
+		return [
+			'ucfirst'    => new TwigFilter('ucfirst', 'ucfirst'),
+			'var_export' => new TwigFilter('var_export', static function ($string) {
+				return var_export($string, true);
+			}),
+		];
+	}
 
-        return $code;
-    }
 
-    public function MongatorIdGeneratorToMongo($configClass, $id, $indent = 8)
-    {
-        $idGenerator = IdGeneratorContainer::get($configClass['idGenerator']['name']);
-        $code = $idGenerator->getToMongoCode();
-        $code = str_replace('%id%', $id, $code);
-        $code = static::indentCode($code, $indent);
+	public function getFunctions() {
+		return [
+			'Mongator_id_generator'          => new TwigFunction('Mongator_id_generator', [$this, 'mongatorIdGenerator']),
+			'Mongator_id_generator_to_mongo' => new TwigFunction('Mongator_id_generator_to_mongo', [$this, 'mongatorIdGeneratorToMongo']),
+			'Mongator_id_generator_to_php'   => new TwigFunction('Mongator_id_generator_to_php', [$this, 'mongatorIdGeneratorToPHP']),
+			'Mongator_type_to_mongo'         => new TwigFunction('Mongator_type_to_mongo', [$this, 'mongatorTypeToMongo']),
+			'Mongator_type_to_php'           => new TwigFunction('Mongator_type_to_php', [$this, 'mongatorTypeToPHP']),
+		];
+	}
 
-        return $code;
-    }
 
-    public function MongatorIdGeneratorToPHP($configClass, $id, $indent = 8)
-    {
-        $idGenerator = IdGeneratorContainer::get($configClass['idGenerator']['name']);
-        $code = $idGenerator->getToPHPCode();
-        $code = str_replace('%id%', $id, $code);
-        $code = static::indentCode($code, $indent);
+	public function mongatorIdGenerator($configClass, $id, $indent = 8) {
+		$idGenerator = IdGeneratorContainer::get($configClass['idGenerator']['name']);
+		$code = $idGenerator->getCode($configClass['idGenerator']['options']);
+		$code = str_replace('%id%', $id, $code);
 
-        return $code;
-    }
+		return static::indentCode($code, $indent);
+	}
 
-    public function MongatorTypeToMongo($type, $from, $to)
-    {
-        return strtr(TypeContainer::get($type)->toMongoInString(), array(
-            '%from%' => $from,
-            '%to%'   => $to,
-        ));
-    }
 
-    public function MongatorTypeToPHP($type, $from, $to)
-    {
-        return strtr(TypeContainer::get($type)->toPHPInString(), array(
-            '%from%' => $from,
-            '%to%'   => $to,
-        ));
-    }
+	public function mongatorIdGeneratorToMongo($configClass, $id, $indent = 8) {
+		$idGenerator = IdGeneratorContainer::get($configClass['idGenerator']['name']);
+		$code = $idGenerator->getToMongoCode();
+		$code = str_replace('%id%', $id, $code);
 
-    public function getName()
-    {
-        return 'Mongator';
-    }
+		return static::indentCode($code, $indent);
+	}
 
-    private static function indentCode($code, $indent)
-    {
-        return str_replace("\n", "\n".str_repeat(' ', $indent), $code);
-    }
+
+	public function mongatorIdGeneratorToPHP($configClass, $id, $indent = 8) {
+		$idGenerator = IdGeneratorContainer::get($configClass['idGenerator']['name']);
+		$code = $idGenerator->getToPHPCode();
+		$code = str_replace('%id%', $id, $code);
+
+		return static::indentCode($code, $indent);
+	}
+
+
+	public function mongatorTypeToMongo($type, $from, $to) {
+		return strtr(TypeContainer::get($type)->toMongoInString(), [
+			'%from%' => $from,
+			'%to%'   => $to,
+		]);
+	}
+
+
+	public function mongatorTypeToPHP($type, $from, $to) {
+		return strtr(TypeContainer::get($type)->toPHPInString(), [
+			'%from%' => $from,
+			'%to%'   => $to,
+		]);
+	}
+
+
+	public function getName() {
+		return 'Mongator';
+	}
+
+
+	private static function indentCode($code, $indent) {
+		return str_replace("\n", "\n" . str_repeat(' ', $indent), $code);
+	}
+
 
 }

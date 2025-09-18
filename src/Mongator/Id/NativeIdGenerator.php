@@ -13,28 +13,20 @@ namespace Mongator\Id;
 
 /**
  * Generates a native identifier.
- *
- * @author Pablo Díez <pablodip@gmail.com>
  */
-class NativeIdGenerator extends BaseIdGenerator
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function getCode(array $options)
-    {
-        return '%id% = new \MongoDB\BSON\ObjectID();';
-    }
+class NativeIdGenerator extends BaseIdGenerator {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getToMongoCode()
-    {
-        return <<<EOF
-if (!%id% instanceof \MongoDB\BSON\ObjectID) {
-    %id% = new \MongoDB\BSON\ObjectID(%id%);
-}
+
+	public function getCode(array $options) {
+		return '%id% = new \MongoDB\BSON\ObjectID();';
+	}
+
+
+	public function getToMongoCode() {
+		return <<<EOF
+ObjectID}
 EOF;
-    }
+	}
+
+
 }

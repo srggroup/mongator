@@ -16,23 +16,21 @@ use Symfony\Component\EventDispatcher\GenericEvent as BaseEvent;
 
 /**
  * The Event class for documents.
- *
- * @author Máximo Cuadros <mcuadros@gmail.com>
- * @author Eduardo Gulias <me@egulias.com>
- *
- * @api
  */
 class Event extends BaseEvent {
-	
+
+
 	private $document;
-	
-	
-	public function __construct(AbstractDocument $document){
+
+
+	public function __construct(AbstractDocument $document) {
 		$this->document = $document;
 	}
-	
-	
-	public function getDocument(){
+
+
+	public function getDocument() {
 		return $this->document;
 	}
+
+
 }

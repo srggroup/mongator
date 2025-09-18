@@ -13,42 +13,28 @@ namespace Mongator\Type;
 
 /**
  * StringType.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-class StringType extends Type
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongo($value)
-    {
-        return (string) $value;
-    }
+class StringType extends Type {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHP($value)
-    {
-        return (string) $value;
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongoInString()
-    {
-        return '%to% = (string) %from%;';
-    }
+	public function toMongo($value) {
+		return (string) $value;
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHPInString()
-    {
-        return '%to% = (string) %from%;';
-    }
+
+	public function toPHP($value) {
+		return (string) $value;
+	}
+
+
+	public function toMongoInString() {
+		return '%to% = (string) %from%;';
+	}
+
+
+	public function toPHPInString() {
+		return '%to% = (string) %from%;';
+	}
+
+
 }

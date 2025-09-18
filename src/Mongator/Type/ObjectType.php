@@ -10,53 +10,42 @@
  */
 
 namespace Mongator\Type;
+
 use MongoDB\Model\BSONDocument;
 
 /**
  * ObjectType.
- *
- * @author Adam.Balint <adam.balint@srg.hu>
- *
- * @api
  */
-class ObjectType extends ArrayObjectType
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongo($value)
-    {
-    	if(empty($value)) $value = [];
-    	else if(!is_array($value)) $value = [$value];
-    	
-    	return new BSONDocument($value);
-    }
+class ObjectType extends ArrayObjectType {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHP($value)
-    {
+
+	public function toMongo($value) {
+		if (empty($value)) {
+			$value = [];
+		} elseif (!is_array($value)) {
+			$value = [$value];
+		}
+
+		return new BSONDocument($value);
+	}
+
+
+	public function toPHP($value) {
 		/**
-		 * @var $value BSONDocument
+		 * @var BSONDocument $value
 		 */
-        return ArrayObjectType::BSONToArrayRecursive($value);
-    }
+		return ArrayObjectType::BSONToArrayRecursive($value);
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongoInString()
-    {
+
+	public function toMongoInString() {
 		return '%to% = %from%; if (empty(%to%)) { %to% = []; } elseif (!is_array(%to%)) { %to% = [%to%]; } %to% = new \MongoDB\Model\BSONDocument(%to%);';
-    }
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHPInString()
-    {
-        return '%to% = \Mongator\Type\ArrayObjectType::BSONToArrayRecursive(%from%);';
-    }
+
+	public function toPHPInString() {
+		return '%to% = \Mongator\Type\ArrayObjectType::BSONToArrayRecursive(%from%);';
+	}
+
 
 }

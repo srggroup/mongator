@@ -13,42 +13,28 @@ namespace Mongator\Type;
 
 /**
  * IntegerType.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-class IntegerType extends Type
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongo($value)
-    {
-        return (int) $value;
-    }
+class IntegerType extends Type {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHP($value)
-    {
-        return (int) $value;
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongoInString()
-    {
-        return '%to% = (int) %from%;';
-    }
+	public function toMongo($value) {
+		return (int) $value;
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHPInString()
-    {
-        return '%to% = (int) %from%;';
-    }
+
+	public function toPHP($value) {
+		return (int) $value;
+	}
+
+
+	public function toMongoInString() {
+		return '%to% = (int) %from%;';
+	}
+
+
+	public function toPHPInString() {
+		return '%to% = (int) %from%;';
+	}
+
+
 }

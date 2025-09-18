@@ -11,57 +11,59 @@
 
 namespace Mongator\Query;
 
-abstract class CachedQuery extends Query
-{
-    protected $count;
+abstract class CachedQuery extends Query {
 
-    /**
-     * Returns the data in cache.
-     *
-     * @return array|null The fields in cache, or null if there is not.
-     */
-    public function getDataCache()
-    {
-        $key = $this->generateKey();
 
-        return $this->getRepository()->getMongator()->getDataCache()->get($key);
-    }
+	protected $count;
 
-    public function setDataCache($data)
-    {
-        $repository = $this->getRepository();
-        $key = $this->generateKey();
-        $metadata = $repository->getMetadata();
 
-        return $repository->getMongator()->getDataCache()->set($key, $data, (int) $metadata['cache']['ttl']);
-    }
+	/**
+	 * Returns the data in cache.
+	 *
+	 * @return array|null The fields in cache, or null if there is not.
+	 */
+	public function getDataCache() {
+		$key = $this->generateKey();
 
-    public function execute()
-    {
-        $this->count = false;
+		return $this->getRepository()->getMongator()->getDataCache()->get($key);
+	}
 
-        if ( $cache = $this->getDataCache() ) {
-            return $cache;
-        }
 
-        $result = parent::execute();
-        $this->setDataCache($result);
+	public function setDataCache($data) {
+		$repository = $this->getRepository();
+		$key = $this->generateKey();
+		$metadata = $repository->getMetadata();
 
-        return $result;
-    }
+		return $repository->getMongator()->getDataCache()->set($key, $data, (int) $metadata['cache']['ttl']);
+	}
 
-    public function count(): int
-    {
-        $this->count = true;
 
-        if ( $count = $this->getDataCache() ) {
-            return $count;
-        }
+	public function execute() {
+		$this->count = false;
 
-        $count = parent::execute()->count();
-        $this->setDataCache($count);
+		if ($cache = $this->getDataCache()) {
+			return $cache;
+		}
 
-        return $count;
-    }
+		$result = parent::execute();
+		$this->setDataCache($result);
+
+		return $result;
+	}
+
+
+	public function count(): int {
+		$this->count = true;
+
+		if ($count = $this->getDataCache()) {
+			return $count;
+		}
+
+		$count = parent::execute()->count();
+		$this->setDataCache($count);
+
+		return $count;
+	}
+
 
 }

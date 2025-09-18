@@ -11,83 +11,65 @@
 
 namespace Mongator\Group;
 
-use Mongator\Archive;
+use Mongator\Document\AbstractDocument;
 
 /**
  * ReferenceGroup.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-class ReferenceGroup extends Group
-{
-    /**
-     * Constructor.
-     *
-     * @param string                              $documentClass The document class.
-     * @param \Mongator\Document\AbstractDocument $parent        The parent document.
-     * @param string                              $field         The reference field.
-     *
-     * @api
-     */
-    public function __construct($documentClass, $parent, $field)
-    {
-        parent::__construct($documentClass);
+class ReferenceGroup extends Group {
 
-        $this->getArchive()->set('parent', $parent);
-        $this->getArchive()->set('field', $field);
-    }
 
-    /**
-     * Returns the parent document.
-     *
-     * @return \Mongator\Document\AbstractDocument The parent document.
-     *
-     * @api
-     */
-    public function getParent()
-    {
-        return $this->getArchive()->get('parent');
-    }
+	/**
+	 * @param string                              $documentClass The document class.
+	 * @param AbstractDocument $parent        The parent document.
+	 * @param string                              $field         The reference field.
+	 */
+	public function __construct($documentClass, $parent, $field) {
+		parent::__construct($documentClass);
 
-    /**
-     * Returns the reference field.
-     *
-     * @return string The reference field.
-     *
-     * @api
-     */
-    public function getField()
-    {
-        return $this->getArchive()->get('field');
-    }
+		$this->getArchive()->set('parent', $parent);
+		$this->getArchive()->set('field', $field);
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function doInitializeSavedData()
-    {
-        return (array) $this->getParent()->{'get'.ucfirst($this->getField())}();
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function doInitializeSaved($data)
-    {
-        return $this->getParent()->getMongator()->getRepository($this->getDocumentClass())->findById($data);
-    }
+	/**
+	 * Returns the parent document.
+	 *
+	 * @return AbstractDocument The parent document.
+	 */
+	public function getParent() {
+		return $this->getArchive()->get('parent');
+	}
 
-    /**
-     * Creates and returns a query to query the referenced elements.
-     *
-     * @api
-     */
-    public function createQuery()
-    {
-        return $this->getParent()->getMongator()->getRepository($this->getDocumentClass())->createQuery(array(
-            '_id' => array('$in' => $this->doInitializeSavedData()),
-        ));
-    }
+
+	/**
+	 * Returns the reference field.
+	 *
+	 * @return string The reference field.
+	 */
+	public function getField() {
+		return $this->getArchive()->get('field');
+	}
+
+
+	/**
+	 * Creates and returns a query to query the referenced elements.
+	 */
+	public function createQuery() {
+		return $this->getParent()->getMongator()->getRepository($this->getDocumentClass())->createQuery([
+			'_id' => ['$in' => $this->doInitializeSavedData()],
+		]);
+	}
+
+
+	protected function doInitializeSavedData() {
+		return (array) $this->getParent()->{'get' . ucfirst($this->getField())}();
+	}
+
+
+	protected function doInitializeSaved($data) {
+		return $this->getParent()->getMongator()->getRepository($this->getDocumentClass())->findById($data);
+	}
+
+
 }

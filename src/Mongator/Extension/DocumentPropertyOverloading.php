@@ -15,16 +15,13 @@ use Mandango\Mondator\Extension;
 
 /**
  * DocumentPropertyOverloading extension.
- *
- * @author Pablo Díez <pablodip@gmail.com>
  */
-class DocumentPropertyOverloading extends Extension
-{
-    /**
-     * {@inheritdoc}
-     */
-    protected function doClassProcess()
-    {
-        $this->processTemplate($this->definitions['document_base'], file_get_contents(__DIR__.'/templates/DocumentPropertyOverloading.php.twig'));
-    }
+class DocumentPropertyOverloading extends Extension {
+
+
+	protected function doClassProcess() {
+		$this->processTemplate($this->definitions['document_base'], file_get_contents(__DIR__ . '/templates/DocumentPropertyOverloading.php.twig'));
+	}
+
+
 }

@@ -11,22 +11,20 @@
 
 namespace Mongator\Extension;
 
+use ArrayAccess;
 use Mandango\Mondator\Extension;
 
 /**
  * DocumentArrayAccess extension.
- *
- * @author Pablo Díez <pablodip@gmail.com>
  */
-class DocumentArrayAccess extends Extension
-{
-    /**
-     * {@inheritdoc}
-     */
-    protected function doClassProcess()
-    {
-        $this->definitions['document_base']->addInterface('\ArrayAccess');
+class DocumentArrayAccess extends Extension {
 
-        $this->processTemplate($this->definitions['document_base'], file_get_contents(__DIR__.'/templates/DocumentArrayAccess.php.twig'));
-    }
+
+	protected function doClassProcess() {
+		$this->definitions['document_base']->addInterface(ArrayAccess::class);
+
+		$this->processTemplate($this->definitions['document_base'], file_get_contents(__DIR__ . '/templates/DocumentArrayAccess.php.twig'));
+	}
+
+
 }

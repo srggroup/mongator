@@ -11,89 +11,83 @@
 
 namespace Mongator\Cache;
 
+use DirectoryIterator;
+use RuntimeException;
+
 /**
  * FilesystemCache.
- *
- * @author Pablo Díez <pablodip@gmail.com>
  */
-class FilesystemCache extends AbstractCache
-{
-    private $dir;
-    private $data = array();
+class FilesystemCache extends AbstractCache {
 
-    /**
-     * Constructor.
-     *
-     * @param string $dir The directory.
-     */
-    public function __construct($dir)
-    {
-        $this->dir = $dir;
-        if (!is_dir($dir) && false === @mkdir($dir, 0777, true)) {
-            throw new \RuntimeException(sprintf('Unable to create the "%s" directory.', $dir));
-        }
 
-    }
+	private $data = [];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function set($key, $value, $ttl = 0)
-    {
-        $content = $this->pack($key, $value, $ttl);
-        $file = $this->dir.'/'.$key.'.php';
 
-        $valueExport = var_export($content , true);
+	/**
+	 * @param string $dir The directory.
+	 */
+	public function __construct(private $dir) {
+		if (!is_dir($dir) && mkdir($dir, 0777, true) === false) {
+			throw new RuntimeException(sprintf('Unable to create the "%s" directory.', $dir));
+		}
+	}
 
-        $php = sprintf("<?php\nreturn %s;\n", $valueExport);
 
-        if (false === @file_put_contents($file, $php, LOCK_EX)) {
-            throw new \RuntimeException(sprintf('Unable to write the "%s" file.', $file));
-        }
+	public function set($key, $value, $ttl = 0) {
+		$content = $this->pack($key, $value, $ttl);
+		$file = $this->dir . '/' . $key . '.php';
 
-        $this->data[$key] = $content;
-    }
+		$valueExport = var_export($content, true);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function remove($key)
-    {
-        $file = $this->dir.'/'.$key.'.php';
-        if (file_exists($file) && false === @unlink($file)) {
-            throw new \RuntimeException(sprintf('Unable to remove the "%s" file.', $file));
-        }
+		$php = sprintf("<?php\nreturn %s;\n", $valueExport);
 
-        if ( isset($this->data[$key]) ) unset($this->data[$key]);
-    }
+		if (file_put_contents($file, $php, LOCK_EX) === false) {
+			throw new RuntimeException(sprintf('Unable to write the "%s" file.', $file));
+		}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function clear()
-    {
-        $this->data = array();
+		$this->data[$key] = $content;
+	}
 
-        if (is_dir($this->dir)) {
-            foreach (new \DirectoryIterator($this->dir) as $file) {
-                if ($file->isFile()) {
-                    if (false === @unlink($file->getRealPath())) {
-                        throw new \RuntimeException(sprintf('Unable to remove the "%s" file.', $file->getRealPath()));
-                    }
-                }
-            }
-        }
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function info($key)
-    {
-        if ( isset($this->data[$key]) ) return $this->data[$key];
+	public function remove($key) {
+		$file = $this->dir . '/' . $key . '.php';
+		if (file_exists($file) && unlink($file) === false) {
+			throw new RuntimeException(sprintf('Unable to remove the "%s" file.', $file));
+		}
 
-        $file = $this->dir.'/'.$key.'.php';
-        if ( !file_exists($file) ) return null;
-        return $this->data[$key] = require($file);
-    }
+		if (isset($this->data[$key])) {
+			unset($this->data[$key]);
+		}
+	}
+
+
+	public function clear() {
+		$this->data = [];
+
+		if (is_dir($this->dir)) {
+			foreach (new DirectoryIterator($this->dir) as $file) {
+				if ($file->isFile()) {
+					if (unlink($file->getRealPath()) === false) {
+						throw new RuntimeException(sprintf('Unable to remove the "%s" file.', $file->getRealPath()));
+					}
+				}
+			}
+		}
+	}
+
+
+	public function info($key) {
+		if (isset($this->data[$key])) {
+			return $this->data[$key];
+		}
+
+		$file = $this->dir . '/' . $key . '.php';
+		if (!file_exists($file)) {
+			return null;
+		}
+
+		return $this->data[$key] = require $file;
+	}
+
+
 }

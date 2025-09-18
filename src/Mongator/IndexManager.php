@@ -11,213 +11,208 @@
 
 namespace Mongator;
 
-use Mongator\Repository;
+use RuntimeException;
 
 /**
  * Query.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-class IndexManager
-{
-    private $repository;
-    private $collection;
-    private $indexes;
-    private $config;
+class IndexManager {
 
-    /**
-     * Constructor.
-     *
-     * @param \Mongator\Repository $repository The repository of the document class.
-     *
-     * @api
-     */
-    public function __construct(Repository $repository)
-    {
-        $this->repository = $repository;
-        $this->collection = $repository->getCollection();
 
-        $class = $repository->getDocumentClass();
+	private $repository;
 
-        $classConfig = $repository->getMongator()->getMetadataFactory()->getClass($class);
-        if ( isset($classConfig['_indexes']) ) $this->config = $classConfig['_indexes'];
-    }
+	private $collection;
 
-    /**
-     * Returns the repository.
-     *
-     * @return \Mongator\Repository The repository.
-     *
-     * @api
-     */
-    public function getRepository()
-    {
-        return $this->repository;
-    }
+	private $config;
 
-    /**
-     * Returns the indexes config for this respository.
-     *
-     * @return \Mongator\Repository The repository.
-     *
-     * @api
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
 
-    /**
-     * Returns the diferences between server indexes and class config, when a indexes change
-     * will be marked in db as unknown and missing the new version.
-     *
-     * @return array Associative array with keys: missing, present and unknown
-     *
-     * @api
-     */
-    public function getDiff()
-    {
-        $set = $this->listIndexes();
-        unset($set['_id_1']);
+	/**
+	 * @param Repository $repository The repository of the document class.
+	 */
+	public function __construct(Repository $repository) {
+		$this->repository = $repository;
+		$this->collection = $repository->getCollection();
 
-        $present = array();
-        $missing = array();
+		$class = $repository->getDocumentClass();
 
-        foreach ($this->config as $index) {
-            if ( !isset($index['options']) ) $index['options'] = array();
+		$classConfig = $repository->getMongator()->getMetadataFactory()->getClass($class);
+		if (isset($classConfig['_indexes'])) {
+			$this->config = $classConfig['_indexes'];
+		}
+	}
 
-            $name = $this->generateIndexKeyFromConfig($index);
-            if ( isset($set[$name]) ) {
-                $present[$name] = $index;
-                unset($set[$name]);
-            } else {
-                $missing[$name] = $index;
-            }
-        }
 
-        return array(
-            'missing' => $missing,
-            'present' => $present,
-            'unknown' => $set
-        );
-    }
+	/**
+	 * Returns the repository.
+	 *
+	 * @return Repository The repository.
+	 */
+	public function getRepository() {
+		return $this->repository;
+	}
 
-    /**
-     * Commit the indexes to the database
-     *
-     * @param boolean $delete (optional) true by default or the unknown indexes will be dropeed from collection
-     *
-     * @return boolean
-     *
-     * @api
-     */
-    public function commit($delete = true)
-    {
-        $diff = $this->getDiff();
 
-        if ($delete) {
-            foreach ($diff['unknown'] as $index) {
-                $this->dropIndex($index['name']);
-            }
-        }
+	/**
+	 * Returns the indexes config for this respository.
+	 *
+	 * @return Repository The repository.
+	 */
+	public function getConfig() {
+		return $this->config;
+	}
 
-        foreach ($diff['missing'] as $name => $index) {
-            $this->createIndex($index['keys'], $index['options']);
-        }
 
-        return true;
-    }
+	/**
+	 * Returns the diferences between server indexes and class config, when a indexes change
+	 * will be marked in db as unknown and missing the new version.
+	 *
+	 * @return array Associative array with keys: missing, present and unknown
+	 */
+	public function getDiff() {
+		$set = $this->listIndexes();
+		unset($set['_id_1']);
 
-    private function dropIndex($name)
-    {
-        $command = array(
-            'dropIndexes' => $this->collection->getCollectionName(),
-            'index' => $name
-        );
+		$present = [];
+		$missing = [];
 
-        $result = $this->repository->getConnection()->getMongoDB()->command($command);
+		foreach ($this->config as $index) {
+			if (!isset($index['options'])) {
+				$index['options'] = [];
+			}
 
-        if ( !is_array($result) && !isset($result['ok']) ) {
-            throw new \RuntimeException(sprintf(
-                'Unable to delete index "%s" at collection %s',
-                $name, $this->collection->getCollectionName()
-            ));
-        }
+			$name = $this->generateIndexKeyFromConfig($index);
+			if (isset($set[$name])) {
+				$present[$name] = $index;
+				unset($set[$name]);
+			} else {
+				$missing[$name] = $index;
+			}
+		}
 
-        if ( (int) $result['ok'] != 1 ) {
-            throw new \RuntimeException(sprintf(
-                'Unable to delete index "%s" at collection %s, message "%s"',
-                $name, $this->collection->getCollectionName(), $result['errmsg']
-            ));
-        }
+		return [
+			'missing' => $missing,
+			'present' => $present,
+			'unknown' => $set,
+		];
+	}
 
-        return true;
-    }
 
-    private function createIndex(array $config, array $options = array())
-    {
-        if ( !$this->collection->createIndex($config, $options) ) {
-            throw new \RuntimeException(sprintf(
-                'Unable to create index "%s" at collection %s',
-                $name, $this->collection->getCollectionName()
-            ));
-        }
+	/**
+	 * Commit the indexes to the database
+	 *
+	 * @param bool $delete (optional) true by default or the unknown indexes will be dropeed from collection
+	 * @return bool
+	 */
+	public function commit($delete = true) {
+		$diff = $this->getDiff();
 
-        return true;
-    }
+		if ($delete) {
+			foreach ($diff['unknown'] as $index) {
+				$this->dropIndex($index['name']);
+			}
+		}
 
-    private function listIndexes()
-    {
-        $indexes = array();
-        foreach ( $this->collection->listIndexes() as $index ) {
-            $name = $this->generateIndexKeyFromDB($index);
-            $indexes[$name] = $index;
-        }
+		foreach ($diff['missing'] as $index) {
+			$this->createIndex($index['keys'], $index['options']);
+		}
 
-        return $indexes;
-    }
+		return true;
+	}
 
-    private function generateIndexKeyFromConfig(array $index)
-    {
-        return $this->generateIndexKey($index['keys'], $index['options']);
-    }
 
-    private function generateIndexKeyFromDB(array $index)
-    {
-        return $this->generateIndexKey($index['key'], $index);
-    }
+	private function dropIndex($name) {
+		$command = [
+			'dropIndexes' => $this->collection->getCollectionName(),
+			'index'       => $name,
+		];
 
-    private function generateIndexKey(array $keys, array $options)
-    {
-        if ( isset($options['weights']) ) {
-            $hash[] = 'text_1';
-            $keys = $options['weights'];
-        }
+		$result = $this->repository->getConnection()->getMongoDB()->command($command);
 
-       foreach ($keys as $key => $value) {
-            if ( is_null($value) ) $hash[] = sprintf('%s_1', $key);
-            else if ( is_numeric($value) ) $hash[] = sprintf('%s_%d', $key, $value);
-            else $hash[] = sprintf('%s_%s', $key, $value);
-        }
+		if (!is_array($result) && !isset($result['ok'])) {
+			throw new RuntimeException(sprintf(
+				'Unable to delete index "%s" at collection %s',
+				$name,
+				$this->collection->getCollectionName()
+			));
+		}
 
-        if ( isset($options['unique']) ) {
-            $hash[] = sprintf('unique_%d', $options['unique']);
-        }
+		if ((int) $result['ok'] !== 1) {
+			throw new RuntimeException(sprintf(
+				'Unable to delete index "%s" at collection %s, message "%s"',
+				$name,
+				$this->collection->getCollectionName(),
+				$result['errmsg']
+			));
+		}
+	}
 
-        if ( isset($options['sparse']) ) {
-            $hash[] = sprintf('sparse_%d', $options['sparse']);
-        }
 
-        if ( isset($options['language']) ) {
-            $hash[] = sprintf('language_%d', $options['language']);
-        } elseif ( isset($options['default_language']) ) {
-            $hash[] = sprintf('language_%d', $options['default_language']);
-        }
+	private function createIndex(array $config, array $options = []) {
+		if (!$this->collection->createIndex($config, $options)) {
+			throw new RuntimeException(sprintf(
+				'Unable to create index "%s" at collection %s',
+				$name,
+				$this->collection->getCollectionName()
+			));
+		}
+	}
 
-        sort($hash);
 
-        return implode('_', $hash);
-    }
+	private function listIndexes() {
+		$indexes = [];
+		foreach ($this->collection->listIndexes() as $index) {
+			$name = $this->generateIndexKeyFromDB($index);
+			$indexes[$name] = $index;
+		}
+
+		return $indexes;
+	}
+
+
+	private function generateIndexKeyFromConfig(array $index) {
+		return $this->generateIndexKey($index['keys'], $index['options']);
+	}
+
+
+	private function generateIndexKeyFromDB(array $index) {
+		return $this->generateIndexKey($index['key'], $index);
+	}
+
+
+	private function generateIndexKey(array $keys, array $options) {
+		if (isset($options['weights'])) {
+			$hash[] = 'text_1';
+			$keys = $options['weights'];
+		}
+
+		foreach ($keys as $key => $value) {
+			if ($value === null) {
+				$hash[] = sprintf('%s_1', $key);
+			} elseif (is_numeric($value)) {
+				$hash[] = sprintf('%s_%d', $key, $value);
+			} else {
+				$hash[] = sprintf('%s_%s', $key, $value);
+			}
+		}
+
+		if (isset($options['unique'])) {
+			$hash[] = sprintf('unique_%d', $options['unique']);
+		}
+
+		if (isset($options['sparse'])) {
+			$hash[] = sprintf('sparse_%d', $options['sparse']);
+		}
+
+		if (isset($options['language'])) {
+			$hash[] = sprintf('language_%d', $options['language']);
+		} elseif (isset($options['default_language'])) {
+			$hash[] = sprintf('language_%d', $options['default_language']);
+		}
+
+		sort($hash);
+
+		return implode('_', $hash);
+	}
+
+
 }

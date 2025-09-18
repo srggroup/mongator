@@ -1,45 +1,63 @@
 {
-    "name": "mongator/mongator",
-    "type": "library",
-    "description": "Mongator is a easy, powerful and ultrafast ODM for PHP and MongoDB. (forked from Mandango project)",
-    "keywords": ["odm", "mongodb"],
-    "homepage": "http://mongator.com",
-    "license": "MIT",
-    "authors": [
-        {
-            "name":  "Máximo Cuadros",
-            "email": "mcuadros@gmail.com"
-        },
-        {
-            "name":  "Daniel Ripollés",
-            "email": "daniel@yunait.com"
-        },
-        {
-            "name":  "Pablo Díez",
-            "email": "pablodip@gmail.com"
-        }
-    ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/srggroup/mondator"
-        }
-    ],
-    "require": {
-        "php": "^8.1",
-        "mongator/mondator": "^3.0",
-        "symfony/event-dispatcher": "~5.4.9",
-        "mongodb/mongodb": "~1.15.0",
-        "laminas/laminas-servicemanager": "~3.19.0"
-    },
-    "suggest": {
-        "ext-apc": "Allow caching on APC",
-        "ext-redis": "Allow caching on Redis",
-        "ext-memcached": "Allow caching on Memcached"
-    },
-    "autoload": {
-        "psr-0": {
-            "Mongator\\": "src/"
-        }
-    }
+	"name": "mongator/mongator",
+	"type": "library",
+	"description": "Mongator is a easy, powerful and ultrafast ODM for PHP and MongoDB. (forked from Mandango project)",
+	"keywords": [
+		"odm",
+		"mongodb"
+	],
+	"homepage": "https://mongator.com",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Máximo Cuadros",
+			"email": "mcuadros@gmail.com"
+		},
+		{
+			"name": "Daniel Ripollés",
+			"email": "daniel@yunait.com"
+		},
+		{
+			"name": "Pablo Díez",
+			"email": "pablodip@gmail.com"
+		}
+	],
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://composer.srggroup.dev/"
+		}
+	],
+	"require": {
+		"php": "^8.4",
+		"mongator/mondator": "^3.0",
+		"symfony/event-dispatcher": "~7.3.3",
+		"mongodb/mongodb": "~1.21.2",
+		"laminas/laminas-servicemanager": "~3.23.1",
+		"ext-mongo": "*",
+		"ext-mongodb": "*"
+	},
+	"require-dev": {
+		"srggroup/srg_standards": "v2.0.0",
+		"dealerdirect/phpcodesniffer-composer-installer": "^v1.1.2",
+		"vimeo/psalm": "^6.13.1"
+	},
+	"suggest": {
+		"ext-apc": "Allow caching on APC",
+		"ext-redis": "Allow caching on Redis",
+		"ext-memcached": "Allow caching on Memcached"
+	},
+	"autoload": {
+		"psr-0": {
+			"Mongator\\": "src/"
+		}
+	},
+	"extra": {
+		"phpcodesniffer-search-depth": 5
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	}
 }

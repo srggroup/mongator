@@ -71,7 +71,10 @@
         } else {
 {% if referenceOne.discriminatorMap %}
             if (false === $discriminatorValue = array_search(get_class($value), {{ referenceOne.discriminatorMap|var_export }})) {
-                throw new \InvalidArgumentException(sprintf('The class "%s" is not a possible reference in the reference "{{ name }}" of the class "{{ class }}".', get_class($value)));
+                throw new \InvalidArgumentException(sprintf(
+					'The class "%s" is not a possible reference in the reference "{{ name }}" of the class "{{ class }}".',
+					get_class($value)
+				));
             }
 {% else %}
             $discriminatorValue = get_class($value);

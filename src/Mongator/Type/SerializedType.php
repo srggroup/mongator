@@ -13,42 +13,28 @@ namespace Mongator\Type;
 
 /**
  * SerializedType.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-class SerializedType extends Type
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongo($value)
-    {
-        return serialize($value);
-    }
+class SerializedType extends Type {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHP($value)
-    {
-        return unserialize($value);
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongoInString()
-    {
-        return '%to% = serialize(%from%);';
-    }
+	public function toMongo($value) {
+		return serialize($value);
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHPInString()
-    {
-        return '%to% = unserialize(%from%);';
-    }
+
+	public function toPHP($value) {
+		return unserialize($value);
+	}
+
+
+	public function toMongoInString() {
+		return '%to% = serialize(%from%);';
+	}
+
+
+	public function toPHPInString() {
+		return '%to% = unserialize(%from%);';
+	}
+
+
 }

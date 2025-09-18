@@ -11,113 +11,99 @@
 
 namespace Mongator\Group;
 
-use Mongator\Archive;
 use Mongator\Document\Document;
 
 /**
  * EmbeddedGroup.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-class EmbeddedGroup extends Group
-{
-    /**
-     * Set the root and path of the embedded group.
-     *
-     * @param \Mongator\Document\Document $root The root document.
-     * @param string                      $path The path.
-     *
-     * @api
-     */
-    public function setRootAndPath(Document $root, $path)
-    {
-        $this->getArchive()->set('root_and_path', array('root' => $root, 'path' => $path));
+class EmbeddedGroup extends Group {
 
-        foreach ($this->getAdd() as $key => $document) {
-            $document->setRootAndPath($root, $path.'._add'.$key);
-        }
-    }
 
-    /**
-     * Returns the root and the path.
-     *
-     * @api
-     */
-    public function getRootAndPath()
-    {
-        return $this->getArchive()->getOrDefault('root_and_path', null);
-    }
+	/**
+	 * Set the root and path of the embedded group.
+	 *
+	 * @param Document $root The root document.
+	 * @param string                      $path The path.
+	 */
+	public function setRootAndPath(Document $root, $path) {
+		$this->getArchive()->set('root_and_path', ['root' => $root, 'path' => $path]);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function add($documents)
-    {
-        parent::add($documents);
+		foreach ($this->getAdd() as $key => $document) {
+			$document->setRootAndPath($root, $path . '._add' . $key);
+		}
+	}
 
-        if ($rap = $this->getRootAndPath()) {
-            foreach ($this->getAdd() as $key => $document) {
-                $document->setRootAndPath($rap['root'], $rap['path'].'._add'.$key);
-            }
-        }
-    }
 
-    /**
-     * Set the saved data.
-     *
-     * @param array $data The saved data.
-     */
-    public function setSavedData($data)
-    {
-        $this->getArchive()->set('saved_data', $data);
-    }
+	/**
+	 * Returns the root and the path.
+	 */
+	public function getRootAndPath() {
+		return $this->getArchive()->getOrDefault('root_and_path', null);
+	}
 
-    /**
-     * Returns the saved data.
-     *
-     * @return array|null The saved data or null if it does not exist.
-     */
-    public function getSavedData()
-    {
-        return $this->getArchive()->getOrDefault('saved_data', null);
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function doInitializeSavedData()
-    {
-        $rap = $this->getRootAndPath();
-        $rap['root']->addFieldCache($rap['path']);
+	public function add($documents) {
+		parent::add($documents);
 
-        $data = $this->getSavedData();
-        if ($data !== null) {
-            return $data;
-        }
+		if ($rap = $this->getRootAndPath()) {
+			foreach ($this->getAdd() as $key => $document) {
+				$document->setRootAndPath($rap['root'], $rap['path'] . '._add' . $key);
+			}
+		}
+	}
 
-        return array();
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function doInitializeSaved($data)
-    {
-        $documentClass = $this->getDocumentClass();
-        $rap = $this->getRootAndPath();
-        $mongator = $rap['root']->getMongator();
+	/**
+	 * Set the saved data.
+	 *
+	 * @param array $data The saved data.
+	 */
+	public function setSavedData($data) {
+		$this->getArchive()->set('saved_data', $data);
+	}
 
-        $saved = array();
-        foreach ($data as $key => $datum) {
-            if ( $datum === null ) continue;
 
-            $saved[] = $document = $mongator->create($documentClass);
-            $document->setDocumentData($datum);
-            $document->setRootAndPath($rap['root'], $rap['path'].'.'.$key);
-        }
+	/**
+	 * Returns the saved data.
+	 *
+	 * @return array|null The saved data or null if it does not exist.
+	 */
+	public function getSavedData() {
+		return $this->getArchive()->getOrDefault('saved_data', null);
+	}
 
-        return $saved;
-    }
+
+	protected function doInitializeSavedData() {
+		$rap = $this->getRootAndPath();
+		$rap['root']->addFieldCache($rap['path']);
+
+		$data = $this->getSavedData();
+		if ($data !== null) {
+			return $data;
+		}
+
+		return [];
+	}
+
+
+	protected function doInitializeSaved($data) {
+		$documentClass = $this->getDocumentClass();
+		$rap = $this->getRootAndPath();
+		$mongator = $rap['root']->getMongator();
+
+		$saved = [];
+		foreach ($data as $key => $datum) {
+			if ($datum === null) {
+				continue;
+			}
+
+			$saved[] = $document = $mongator->create($documentClass);
+			$document->setDocumentData($datum);
+			$document->setRootAndPath($rap['root'], $rap['path'] . '.' . $key);
+		}
+
+		return $saved;
+	}
+
+
 }

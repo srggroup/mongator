@@ -31,7 +31,12 @@
     public function get{{ name|ucfirst }}()
     {
         if (!isset($this->data['referencesMany']['{{ name }}'])) {
-            $this->data['referencesMany']['{{ name }}'] = new \Mongator\Group\PolymorphicReferenceGroup('{{ referenceMany.discriminatorField }}', $this, '{{ referenceMany.field }}', {{ referenceMany.discriminatorMap ? referenceMany.discriminatorMap|var_export : 'false' }});
+            $this->data['referencesMany']['{{ name }}'] = new \Mongator\Group\PolymorphicReferenceGroup(
+				'{{ referenceMany.discriminatorField }}',
+				$this,
+				'{{ referenceMany.field }}',
+				{{ referenceMany.discriminatorMap ? referenceMany.discriminatorMap|var_export : 'false' }}
+			);
         }
 
         return $this->data['referencesMany']['{{ name }}'];

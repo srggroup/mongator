@@ -11,105 +11,106 @@
 
 namespace Mongator\Id;
 
+use InvalidArgumentException;
+use ReflectionClass;
+use ReflectionException;
+
 /**
  * Container of id generators.
- *
- * @author Pablo Díez <pablodip@gmail.com>
  */
-class IdGeneratorContainer
-{
-    private static $map = array(
-        'none'     => 'Mongator\Id\NoneIdGenerator',
-        'native'   => 'Mongator\Id\NativeIdGenerator',
-        'sequence' => 'Mongator\Id\SequenceIdGenerator',
-    );
+class IdGeneratorContainer {
 
-    private static $idGenerators = array();
 
-    /**
-     * Returns whether or not an id generator exists.
-     *
-     * @param string $name The name.
-     *
-     * @return Boolean Whether or not the id generator exists.
-     */
-    public static function has($name)
-    {
-        return isset(static::$map[$name]);
-    }
+	private static $map = [
+		'none'     => NoneIdGenerator::class,
+		'native'   => NativeIdGenerator::class,
+		'sequence' => SequenceIdGenerator::class,
+	];
 
-    /**
-     * Add an id generator.
-     *
-     * @param string $name  The name.
-     * @param string $class The class.
-     *
-     * @throws \InvalidArgumentException If the id generator already exists.
-     * @throws \InvalidArgumentException If the class is not a subclass of Mongator\Id\IdGenerator.
-     */
-    public static function add($name, $class)
-    {
-        if (static::has($name)) {
-            throw new \InvalidArgumentException(sprintf('The id generator "%s" already exists.', $name));
-        }
+	private static $idGenerators = [];
 
-        $r = new \ReflectionClass($class);
-        if (!$r->isSubclassOf('Mongator\Id\BaseIdGenerator')) {
-            throw new \InvalidArgumentException(sprintf('The class "%s" is not a subclass of Mongator\Id\BaseIdGenerator.', $class));
-        }
 
-        static::$map[$name] = $class;
-    }
+	/**
+	 * Returns whether or not an id generator exists.
+	 *
+	 * @param string $name The name.
+	 * @return bool Whether or not the id generator exists.
+	 */
+	public static function has($name) {
+		return isset(static::$map[$name]);
+	}
 
-    /**
-     * Returns an id generator.
-     *
-     * @param string $name The name.
-     *
-     * @return \Mongator\Id\BaseIdGenerator The id generator.
-     *
-     * @throws \InvalidArgumentException If the id generator does not exists.
-     */
-    public static function get($name)
-    {
-        if (!isset(static::$idGenerators[$name])) {
-            if (!static::has($name)) {
-                throw new \InvalidArgumentException(sprintf('The id generator "%s" does not exists.', $name));
-            }
 
-            static::$idGenerators[$name] = new static::$map[$name];
-        }
+	/**
+	 * Add an id generator.
+	 *
+	 * @param string $name  The name.
+	 * @param string $class The class.
+	 * @throws InvalidArgumentException If the id generator already exists.
+	 * @throws InvalidArgumentException If the class is not a subclass of Mongator\Id\IdGenerator.
+	 * @throws ReflectionException
+	 */
+	public static function add($name, $class) {
+		if (static::has($name)) {
+			throw new InvalidArgumentException(sprintf('The id generator "%s" already exists.', $name));
+		}
 
-        return static::$idGenerators[$name];
-    }
+		$r = new ReflectionClass($class);
+		if (!$r->isSubclassOf(BaseIdGenerator::class)) {
+			throw new InvalidArgumentException(sprintf('The class "%s" is not a subclass of Mongator\Id\BaseIdGenerator.', $class));
+		}
 
-    /**
-     * Remove an id generator.
-     *
-     * @param string $name The name.
-     *
-     * @throws \InvalidArgumentException If the id generator does not exists.
-     */
-    public static function remove($name)
-    {
-        if (!static::has($name)) {
-            throw new \InvalidArgumentException(sprintf('The id generator "%s" does not exists.', $name));
-        }
+		static::$map[$name] = $class;
+	}
 
-        unset(static::$map[$name], static::$idGenerators[$name]);
-    }
 
-    /**
-     * Reset the id generators.
-     */
-    public static function reset()
-    {
-        static::$map = array(
-            'none'     => 'Mongator\Id\NoneIdGenerator',
-            'native'   => 'Mongator\Id\NativeIdGenerator',
-            'sequence' => 'Mongator\Id\SequenceIdGenerator',
-        );
+	/**
+	 * Returns an id generator.
+	 *
+	 * @param string $name The name.
+	 * @return BaseIdGenerator The id generator.
+	 * @throws InvalidArgumentException If the id generator does not exists.
+	 */
+	public static function get($name) {
+		if (!isset(static::$idGenerators[$name])) {
+			if (!static::has($name)) {
+				throw new InvalidArgumentException(sprintf('The id generator "%s" does not exists.', $name));
+			}
 
-        static::$idGenerators = array();
-    }
+			static::$idGenerators[$name] = new static::$map[$name]();
+		}
+
+		return static::$idGenerators[$name];
+	}
+
+
+	/**
+	 * Remove an id generator.
+	 *
+	 * @param string $name The name.
+	 * @throws InvalidArgumentException If the id generator does not exists.
+	 */
+	public static function remove($name) {
+		if (!static::has($name)) {
+			throw new InvalidArgumentException(sprintf('The id generator "%s" does not exists.', $name));
+		}
+
+		unset(static::$map[$name], static::$idGenerators[$name]);
+	}
+
+
+	/**
+	 * Reset the id generators.
+	 */
+	public static function reset() {
+		static::$map = [
+			'none'     => NoneIdGenerator::class,
+			'native'   => NativeIdGenerator::class,
+			'sequence' => SequenceIdGenerator::class,
+		];
+
+		static::$idGenerators = [];
+	}
+
+
 }

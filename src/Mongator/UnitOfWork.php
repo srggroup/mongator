@@ -15,172 +15,141 @@ use Mongator\Document\Document;
 
 /**
  * UnitOfWork.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-class UnitOfWork implements UnitOfWorkInterface
-{
-    private $mongator;
-    private $persist;
-    private $remove;
+class UnitOfWork implements UnitOfWorkInterface {
 
-    /**
-     * Constructor.
-     *
-     * @param \Mongator\Mongator $mongator The Mongator.
-     *
-     * @api
-     */
-    public function __construct(Mongator $mongator)
-    {
-        $this->mongator = $mongator;
-        $this->persist = array();
-        $this->remove = array();
-    }
 
-    /**
-     * Returns the Mongator.
-     *
-     * @return \Mongator\Mongator The Mongator.
-     *
-     * @api
-     */
-    public function getMongator()
-    {
-        return $this->mongator;
-    }
+	private $mongator;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function persist($documents)
-    {
-        if (!is_array($documents)) {
-            $documents = array($documents);
-        }
+	private $persist;
 
-        foreach ($documents as $document) {
-            $class = get_class($document);
-            $oid = spl_object_hash($document);
+	private $remove;
 
-            if (isset($this->remove[$class][$oid])) {
-                unset($this->remove[$class][$oid]);
-            }
 
-            $this->persist[$class][$oid] = $document;
-        }
-    }
+	/**
+	 * @param Mongator $mongator The Mongator.
+	 */
+	public function __construct(Mongator $mongator) {
+		$this->mongator = $mongator;
+		$this->persist = [];
+		$this->remove = [];
+	}
 
-    /**
-     * Returns if a document is pending for persist.
-     *
-     * @param \Mongator\Document\Document A document.
-     *
-     * @return bool If the document is pending for persist.
-     *
-     * @api
-     */
-    public function isPendingForPersist(Document $document)
-    {
-        return isset($this->persist[get_class($document)][spl_object_hash($document)]);
-    }
 
-    /**
-     * Returns if there are pending persist operations.
-     *
-     * @return boolean If there are pending persist operations.
-     *
-     * @api
-     */
-    public function hasPendingForPersist()
-    {
-        return (bool) count($this->persist);
-    }
+	/**
+	 * Returns the Mongator.
+	 *
+	 * @return Mongator The Mongator.
+	 */
+	public function getMongator() {
+		return $this->mongator;
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function remove($documents)
-    {
-        if (!is_array($documents)) {
-            $documents = array($documents);
-        }
 
-        foreach ($documents as $document) {
-            $class = get_class($document);
-            $oid = spl_object_hash($document);
+	public function persist($documents) {
+		if (!is_array($documents)) {
+			$documents = [$documents];
+		}
 
-            if (isset($this->persist[$class][$oid])) {
-                unset($this->persist[$class][$oid]);
-            }
+		foreach ($documents as $document) {
+			$class = $document::class;
+			$oid = spl_object_hash($document);
 
-            $this->remove[$class][$oid] = $document;
-        }
-    }
+			if (isset($this->remove[$class][$oid])) {
+				unset($this->remove[$class][$oid]);
+			}
 
-    /**
-     * Returns if a document is pending for remove.
-     *
-     * @param \Mongator\Document\Document A document.
-     *
-     * @return bool If the document is pending for remove.
-     *
-     * @api
-     */
-    public function isPendingForRemove(Document $document)
-    {
-        return isset($this->remove[get_class($document)][spl_object_hash($document)]);
-    }
+			$this->persist[$class][$oid] = $document;
+		}
+	}
 
-    /**
-     * Returns if there are pending remove operations.
-     *
-     * @return boolean If there are pending remove operations.
-     *
-     * @api
-     */
-    public function hasPendingForRemove()
-    {
-        return (bool) count($this->remove);
-    }
 
-    /**
-     * Returns if there are pending operations.
-     *
-     * @return boolean If there are pending operations.
-     *
-     * @api
-     */
-    public function hasPending()
-    {
-        return $this->hasPendingForPersist() || $this->hasPendingForRemove();
-    }
+	/**
+	 * Returns if a document is pending for persist.
+	 *
+	 * @return bool If the document is pending for persist.
+	 */
+	public function isPendingForPersist(Document $document) {
+		return isset($this->persist[$document::class][spl_object_hash($document)]);
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function commit()
-    {
-        // execute
-        foreach ($this->persist as $class => $documents) {
-            $this->mongator->getRepository($class)->save($documents);
-        }
-        foreach ($this->remove as $class => $documents) {
-            $this->mongator->getRepository($class)->delete($documents);
-        }
 
-        // clear
-        $this->clear();
-    }
+	/**
+	 * Returns if there are pending persist operations.
+	 *
+	 * @return bool If there are pending persist operations.
+	 */
+	public function hasPendingForPersist() {
+		return (bool) count($this->persist);
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function clear()
-    {
-        $this->persist = array();
-        $this->remove = array();
-    }
+
+	public function remove($documents) {
+		if (!is_array($documents)) {
+			$documents = [$documents];
+		}
+
+		foreach ($documents as $document) {
+			$class = $document::class;
+			$oid = spl_object_hash($document);
+
+			if (isset($this->persist[$class][$oid])) {
+				unset($this->persist[$class][$oid]);
+			}
+
+			$this->remove[$class][$oid] = $document;
+		}
+	}
+
+
+	/**
+	 * Returns if a document is pending for remove.
+	 *
+	 * @return bool If the document is pending for remove.
+	 */
+	public function isPendingForRemove(Document $document) {
+		return isset($this->remove[$document::class][spl_object_hash($document)]);
+	}
+
+
+	/**
+	 * Returns if there are pending remove operations.
+	 *
+	 * @return bool If there are pending remove operations.
+	 */
+	public function hasPendingForRemove() {
+		return (bool) count($this->remove);
+	}
+
+
+	/**
+	 * Returns if there are pending operations.
+	 *
+	 * @return bool If there are pending operations.
+	 */
+	public function hasPending() {
+		return $this->hasPendingForPersist() || $this->hasPendingForRemove();
+	}
+
+
+	public function commit() {
+		// execute
+		foreach ($this->persist as $class => $documents) {
+			$this->mongator->getRepository($class)->save($documents);
+		}
+		foreach ($this->remove as $class => $documents) {
+			$this->mongator->getRepository($class)->delete($documents);
+		}
+
+		// clear
+		$this->clear();
+	}
+
+
+	public function clear() {
+		$this->persist = [];
+		$this->remove = [];
+	}
+
+
 }

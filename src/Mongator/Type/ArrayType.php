@@ -10,52 +10,42 @@
  */
 
 namespace Mongator\Type;
+
 use MongoDB\Model\BSONArray;
 
 /**
  * ArrayType.
- *
- * @author Adam.Balint <adam.balint@srg.hu>
- *
- * @api
  */
-class ArrayType extends ArrayObjectType
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongo($value)
-    {
-    	if(empty($value)) $value = [];
-    	else if(!is_array($value)) $value = [$value];
-    	
-    	return new BSONArray(array_values($value));
-    }
+class ArrayType extends ArrayObjectType {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHP($value)
-    {
+
+	public function toMongo($value) {
+		if (empty($value)) {
+			$value = [];
+		} elseif (!is_array($value)) {
+			$value = [$value];
+		}
+
+		return new BSONArray(array_values($value));
+	}
+
+
+	public function toPHP($value) {
 		/**
-		 * @var $value BSONArray
+		 * @var BSONArray $value
 		 */
 		return ArrayObjectType::BSONToArrayRecursive($value);
-    }
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongoInString()
-    {
+
+	public function toMongoInString() {
 		return '%to% = %from%; if (empty(%to%)) { %to% = []; } elseif (!is_array(%to%)) { %to% = [%to%]; } %to% = new \MongoDB\Model\BSONArray(array_values(%to%));';
-    }
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHPInString()
-    {
+
+	public function toPHPInString() {
 		return '%to% = \Mongator\Type\ArrayObjectType::BSONToArrayRecursive(%from%);';
-    }
+	}
+
+
 }

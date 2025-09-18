@@ -11,133 +11,130 @@
 
 namespace Mongator\Document;
 
-use Mongator\Archive;
 use Mongator\Group\EmbeddedGroup;
 
 /**
  * The base class for embedded documents.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-abstract class EmbeddedDocument extends AbstractDocument
-{
-    /**
-     * Set the root and path of the embedded document.
-     *
-     * @param \Mongator\Document\Document $root The root document.
-     * @param string                      $path The path.
-     *
-     * @api
-     */
-    public function setRootAndPath(Document $root, $path)
-    {
-        $this->getArchive()->set('root_and_path', array('root' => $root, 'path' => $path));
+abstract class EmbeddedDocument extends AbstractDocument {
 
-        if (isset($this->data['embeddedsOne'])) {
-            foreach ($this->data['embeddedsOne'] as $name => $embedded) {
-                $embedded->setRootAndPath($root, $path.'.'.$name);
-            }
-        }
 
-        if (isset($this->data['embeddedsMany'])) {
-            foreach ($this->data['embeddedsMany'] as $name => $embedded) {
-                $embedded->setRootAndPath($root, $path.'.'.$name);
-            }
-        }
-    }
+	/**
+	 * Set the root and path of the embedded document.
+	 *
+	 * @param Document $root The root document.
+	 * @param string   $path The path.
+	 */
+	public function setRootAndPath(Document $root, $path) {
+		$this->getArchive()->set('root_and_path', ['root' => $root, 'path' => $path]);
 
-    /**
-     * Returns the root and path of the embedded document.
-     *
-     * @return array An array with the root and path (root and path keys) or null if they do not exist.
-     *
-     * @api
-     */
-    public function getRootAndPath()
-    {
-        return $this->getArchive()->getOrDefault('root_and_path', null);
-    }
+		if (isset($this->data['embeddedsOne'])) {
+			foreach ($this->data['embeddedsOne'] as $name => $embedded) {
+				$embedded->setRootAndPath($root, $path . '.' . $name);
+			}
+		}
 
-    /**
-     * Returns if the embedded document is an embedded one document changed.
-     *
-     * @return bool If the document is an embedded one document changed.
-     */
-    public function isEmbeddedOneChangedInParent()
-    {
-        if (!$rap = $this->getRootAndPath()) {
-            return false;
-        }
+		if (isset($this->data['embeddedsMany'])) {
+			foreach ($this->data['embeddedsMany'] as $name => $embedded) {
+				$embedded->setRootAndPath($root, $path . '.' . $name);
+			}
+		}
+	}
 
-        if ($rap['root'] instanceof EmbeddedGroup) {
-            return false;
-        }
 
-        $exPath = explode('.', $rap['path']);
-        unset($exPath[count($exPath) -1 ]);
+	/**
+	 * Returns the root and path of the embedded document.
+	 *
+	 * @return array An array with the root and path (root and path keys) or null if they do not exist.
+	 */
+	public function getRootAndPath() {
+		return $this->getArchive()->getOrDefault('root_and_path', null);
+	}
 
-        $parentDocument = $rap['root'];
-        foreach ($exPath as $embedded) {
-            $parentDocument = $parentDocument->{'get'.ucfirst($embedded)}();
-            if ($parentDocument instanceof EmbeddedGroup) {
-                return false;
-            }
-        }
 
-        $rap = $this->getRootAndPath();
-        $exPath = explode('.', $rap['path']);
-        $name = $exPath[count($exPath) - 1];
+	/**
+	 * Returns if the embedded document is an embedded one document changed.
+	 *
+	 * @return bool If the document is an embedded one document changed.
+	 */
+	public function isEmbeddedOneChangedInParent() {
+		if (!$rap = $this->getRootAndPath()) {
+			return false;
+		}
 
-        return $parentDocument->isEmbeddedOneChanged($name);
-    }
+		if ($rap['root'] instanceof EmbeddedGroup) {
+			return false;
+		}
 
-    /**
-     * Returns whether the embedded document is an embedded many new.
-     *
-     * @return bool Whether the embedded document is an embedded many new.
-     */
-    public function isEmbeddedManyNew()
-    {
-        if (!$rap = $this->getRootAndPath()) {
-            return false;
-        }
+		$exPath = explode('.', $rap['path']);
+		unset($exPath[count($exPath) - 1]);
 
-        return false !== strpos($rap['path'], '._add');
-    }
+		$parentDocument = $rap['root'];
+		foreach ($exPath as $embedded) {
+			$parentDocument = $parentDocument->{'get' . ucfirst($embedded)}();
+			if ($parentDocument instanceof EmbeddedGroup) {
+				return false;
+			}
+		}
 
-    /**
-     * When a object is clonated whe mark all fields as modified.
-     */
-    public function __clone()
-    {
-        if (isset($this->data['fields'])) {
-            foreach ($this->data['fields'] as $name => $value) {
-                $this->fieldsModified[$name] = $value;
-            }
-        }
-    }
+		$rap = $this->getRootAndPath();
+		$exPath = explode('.', $rap['path']);
+		$name = $exPath[count($exPath) - 1];
 
-    /**
-     * {@inheritdoc }
-     */
-    public function isFieldInQuery($field)
-    {
-        $rap = $this->getRootAndPath();
-        if (!$rap['root']) return false;
-        return $rap['root']->isFieldInQuery($field);
-    }
+		return $parentDocument->isEmbeddedOneChanged($name);
+	}
 
-    /**
-     * {@inheritdoc }
-     */
-    public function loadFull()
-    {
-        $rap = $this->getRootAndPath();
-        if (!$rap['root']) return false;
-        return $rap['root']->loadFull();
-    }
+
+	/**
+	 * Returns whether the embedded document is an embedded many new.
+	 *
+	 * @return bool Whether the embedded document is an embedded many new.
+	 */
+	public function isEmbeddedManyNew() {
+		if (!$rap = $this->getRootAndPath()) {
+			return false;
+		}
+
+		return strpos($rap['path'], '._add') !== false;
+	}
+
+
+	/**
+	 * {@inheritdoc }
+	 */
+	public function isFieldInQuery($field) {
+		$rap = $this->getRootAndPath();
+		if (!$rap['root']) {
+			return false;
+		}
+
+		return $rap['root']->isFieldInQuery($field);
+	}
+
+
+	/**
+	 * {@inheritdoc }
+	 */
+	public function loadFull() {
+		$rap = $this->getRootAndPath();
+		if (!$rap['root']) {
+			return false;
+		}
+
+		return $rap['root']->loadFull();
+	}
+
+
+	/**
+	 * When a object is clonated whe mark all fields as modified.
+	 */
+	public function __clone() {
+		if (isset($this->data['fields'])) {
+			foreach ($this->data['fields'] as $name => $value) {
+				$this->fieldsModified[$name] = $value;
+			}
+		}
+	}
 
 
 }

@@ -13,48 +13,34 @@ namespace Mongator\Cache;
 
 /**
  * AbstractCache.
- *
- * @author Máximo Cuadros <maximo@yunait.com>
  */
-class APCCache extends AbstractCache
-{
-    private $data = array();
+class APCCache extends AbstractCache {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function set($key, $value, $ttl = 0)
-    {
-        $content = $this->pack($key, $value, $ttl);
-        $string = serialize($content);
-        apc_store((string) $key, $string, $ttl);
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function remove($key)
-    {
-        return apc_delete($key);
-    }
+	public function set($key, $value, $ttl = 0) {
+		$content = $this->pack($key, $value, $ttl);
+		$string = serialize($content);
+		apc_store((string) $key, $string, $ttl);
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function clear()
-    {
-        return apc_clear_cache('user');
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function info($key)
-    {
-        if ( !$content = apc_fetch($key) ) {
-            return false;
-        }
+	public function remove($key) {
+		return apc_delete($key);
+	}
 
-        return unserialize($content);
-    }
+
+	public function clear() {
+		return apc_clear_cache('user');
+	}
+
+
+	public function info($key) {
+		if (!$content = apc_fetch($key)) {
+			return false;
+		}
+
+		return unserialize($content);
+	}
+
+
 }

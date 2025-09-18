@@ -11,151 +11,123 @@
 
 namespace Mongator;
 
-use \MongoDB\Client as MongoDBClient;
+use LogicException;
+use MongoDB\Client as MongoDBClient;
 
 /**
  * Connection.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-class Connection implements ConnectionInterface
-{
-    private $server;
-    private $dbName;
-    private $options;
+class Connection implements ConnectionInterface {
 
-    private $mongo;
-    private $mongoDB;
 
-    /**
-     * Constructor.
-     *
-     * @param string $server  The server.
-     * @param string $dbName  The database name.
-     * @param array  $options The \MongoClient options (optional).
-     *
-     * @api
-     */
-    public function __construct($server, $dbName, array $options = array())
-    {
-        $this->server = $server;
-        $this->dbName = $dbName;
-        $this->options = $options;
-    }
+	private $options;
 
-    /**
-     * Sets the server.
-     *
-     * @param string $server The server.
-     *
-     * @throws \LogicException If the mongo is initialized.
-     *
-     * @api
-     */
-    public function setServer($server)
-    {
-        if (null !== $this->mongo) {
-            throw new \LogicException('The mongo is initialized.');
-        }
+	private $mongo;
 
-        $this->server = $server;
-    }
+	private $mongoDB; //@phpcs:ignore WebimpressCodingStandard.NamingConventions.ValidVariableName
 
-    /**
-     * Returns the server.
-     *
-     * @return string $server The server.
-     *
-     * @api
-     */
-    public function getServer()
-    {
-        return $this->server;
-    }
 
-    /**
-     * Sets the db name.
-     *
-     * @param string $dbName The db name.
-     *
-     * @throws \LogicException If the mongoDb is initialized.
-     *
-     * @api
-     */
-    public function setDbName($dbName)
-    {
-        if (null !== $this->mongoDB) {
-            throw new \LogicException('The mongoDb is initialized.');
-        }
+	/**
+	 * @param string $server  The server.
+	 * @param string $dbName  The database name.
+	 * @param array  $options The \MongoClient options (optional).
+	 */
+	public function __construct(private $server, private $dbName, array $options = []) {
+		$this->options = $options;
+	}
 
-        $this->dbName = $dbName;
-    }
 
-    /**
-     * Returns the database name.
-     *
-     * @return string The database name.
-     *
-     * @api
-     */
-    public function getDbName()
-    {
-        return $this->dbName;
-    }
+	/**
+	 * Sets the server.
+	 *
+	 * @param string $server The server.
+	 * @throws LogicException If the mongo is initialized.
+	 */
+	public function setServer($server) {
+		if ($this->mongo !== null) {
+			throw new LogicException('The mongo is initialized.');
+		}
 
-    /**
-     * Sets the options.
-     *
-     * @param array $options An array of options.
-     *
-     * @throws \LogicException If the mongo is initialized.
-     *
-     * @api
-     */
-    public function setOptions(array $options)
-    {
-        if (null !== $this->mongo) {
-            throw new \LogicException('The mongo is initialized.');
-        }
+		$this->server = $server;
+	}
 
-        $this->options = $options;
-    }
 
-    /**
-     * Returns the options.
-     *
-     * @return array The options.
-     *
-     * @api
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
+	/**
+	 * Returns the server.
+	 *
+	 * @return string $server The server.
+	 */
+	public function getServer() {
+		return $this->server;
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getMongo()
-    {
-        if (null === $this->mongo) {
+
+	/**
+	 * Sets the db name.
+	 *
+	 * @param string $dbName The db name.
+	 * @throws LogicException If the mongoDb is initialized.
+	 */
+	public function setDbName($dbName) {
+		if ($this->mongoDB !== null) {
+			throw new LogicException('The mongoDb is initialized.');
+		}
+
+		$this->dbName = $dbName;
+	}
+
+
+	/**
+	 * Returns the database name.
+	 *
+	 * @return string The database name.
+	 */
+	public function getDbName() {
+		return $this->dbName;
+	}
+
+
+	/**
+	 * Sets the options.
+	 *
+	 * @param array $options An array of options.
+	 * @throws LogicException If the mongo is initialized.
+	 */
+	public function setOptions(array $options) {
+		if ($this->mongo !== null) {
+			throw new LogicException('The mongo is initialized.');
+		}
+
+		$this->options = $options;
+	}
+
+
+	/**
+	 * Returns the options.
+	 *
+	 * @return array The options.
+	 */
+	public function getOptions() {
+		return $this->options;
+	}
+
+
+	public function getMongo() {
+		if ($this->mongo === null) {
 			$this->mongo = new MongoDBClient($this->server, $this->options);
-        }
+		}
 
-        return $this->mongo;
-    }
+		return $this->mongo;
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getMongoDB()
-    {
-        if (null === $this->mongoDB) {
-            $this->mongoDB = $this->getMongo()->selectDatabase($this->dbName);
-        }
 
-        return $this->mongoDB;
-    }
+	public function getMongoDB() {
+		if ($this->mongoDB === null) {
+			$this->mongoDB = $this->getMongo()->selectDatabase($this->dbName);
+		}
+
+		return $this->mongoDB;
+	}
+
+
 }

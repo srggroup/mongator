@@ -13,42 +13,28 @@ namespace Mongator\Type;
 
 /**
  * FloatType.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-class FloatType extends Type
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongo($value)
-    {
-        return (float) $value;
-    }
+class FloatType extends Type {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHP($value)
-    {
-        return (float) $value;
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toMongoInString()
-    {
-        return '%to% = (float) %from%;';
-    }
+	public function toMongo($value) {
+		return (float) $value;
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toPHPInString()
-    {
-        return '%to% = (float) %from%;';
-    }
+
+	public function toPHP($value) {
+		return (float) $value;
+	}
+
+
+	public function toMongoInString() {
+		return '%to% = (float) %from%;';
+	}
+
+
+	public function toPHPInString() {
+		return '%to% = (float) %from%;';
+	}
+
+
 }

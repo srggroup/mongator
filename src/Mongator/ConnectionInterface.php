@@ -10,32 +10,30 @@
  */
 
 namespace Mongator;
+
 use MongoDB\Client;
+use MongoDB\Database;
 
 /**
  * ConnectionInterface.
- *
- * @author Pablo Díez <pablodip@gmail.com>
- *
- * @api
  */
-interface ConnectionInterface
-{
-    /**
-     * Returns the mongo connection object.
-     *
-     * @return \MongoDB\Client The mongo collection object.
-     *
-     * @api
-     */
-    public function getMongo();
+interface ConnectionInterface {
 
-    /**
-     * Returns the database object.
-     *
-     * @return \MongoDB\Database The database object.
-     *
-     * @api
-     */
-    public function getMongoDB();
+
+	/**
+	 * Returns the mongo connection object.
+	 *
+	 * @return Client The mongo collection object.
+	 */
+	public function getMongo();
+
+
+	/**
+	 * Returns the database object.
+	 *
+	 * @return Database The database object.
+	 */
+	public function getMongoDB();
+
+
 }
