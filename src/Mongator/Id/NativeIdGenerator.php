@@ -24,7 +24,9 @@ class NativeIdGenerator extends BaseIdGenerator {
 
 	public function getToMongoCode() {
 		return <<<EOF
-ObjectID}
+if (!%id% instanceof \MongoDB\BSON\ObjectID) {
+    %id% = new \MongoDB\BSON\ObjectID(%id%);
+}
 EOF;
 	}
 
