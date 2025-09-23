@@ -289,7 +289,7 @@ abstract class Query implements Countable, IteratorAggregate {
 	 */
 	public function limit($limit) {
 		if ($limit !== null) {
-			if (!is_numeric($limit) || $limit !== (int) $limit) {
+			if (!is_numeric($limit)) {
 				throw new InvalidArgumentException('The limit is not valid.');
 			}
 			$limit = (int) $limit;
@@ -320,7 +320,7 @@ abstract class Query implements Countable, IteratorAggregate {
 	 */
 	public function skip($skip) {
 		if ($skip !== null) {
-			if (!is_numeric($skip) || $skip !== (int) $skip) {
+			if (!is_numeric($skip)) {
 				throw new InvalidArgumentException('The skip is not valid.');
 			}
 			$skip = (int) $skip;
@@ -350,7 +350,7 @@ abstract class Query implements Countable, IteratorAggregate {
 	 */
 	public function batchSize($batchSize) {
 		if ($batchSize !== null) {
-			if (!is_numeric($batchSize) || $batchSize !== (int) $batchSize) {
+			if (!is_numeric($batchSize)) {
 				throw new InvalidArgumentException('The batchSize is not valid.');
 			}
 			$batchSize = (int) $batchSize;
@@ -433,7 +433,7 @@ abstract class Query implements Countable, IteratorAggregate {
 	 */
 	public function timeout($timeout) {
 		if ($timeout !== null) {
-			if (!is_numeric($timeout) || $timeout !== (int) $timeout) {
+			if (!is_numeric($timeout)) {
 				throw new InvalidArgumentException('The timeout is not valid.');
 			}
 			$timeout = (int) $timeout;
