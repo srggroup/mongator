@@ -6,6 +6,8 @@
 		"odm",
 		"mongodb"
 	],
+	"minimum-stability": "dev",
+	"prefer-stable": true,
 	"homepage": "https://mongator.com",
 	"license": "MIT",
 	"authors": [
@@ -30,7 +32,7 @@
 	],
 	"require": {
 		"php": "^8.3 | ^8.4",
-		"mongator/mondator": "dev-dev-updates",
+		"mongator/mondator": "^4.0.0",
 		"symfony/event-dispatcher": "~7.3.3",
 		"mongodb/mongodb": "^2.1.1",
 		"laminas/laminas-servicemanager": "~3.23.1",
